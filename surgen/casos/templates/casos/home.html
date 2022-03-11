@@ -1,0 +1,9 @@
+{% extends "casos/base.html" %}
+{% block content %}
+    <h1>SUR-Gen home</h1>
+    <ul>
+        {% for caso in casos %}
+        <li>{{ caso.victima }} fue agredida por {{ caso.agresor }} el dia {{ caso.fecha }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

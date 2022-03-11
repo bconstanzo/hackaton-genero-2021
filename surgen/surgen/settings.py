@@ -31,12 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # agregadas por nosotros:
+    'casos.apps.CasosConfig',
+    # instaladas por default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # agregadas al final:
+    #'debug_toolbar',
 ]
 
 MIDDLEWARE = [
