@@ -1,0 +1,74 @@
+{% extends "casos/base.html" %}
+{% block content %}
+    <h1>SUR-Gen Perfil</h1>
+    <br/>
+    <div class="row">
+        <div class="col-md-6">
+            <!--perfil-->
+            <h2>{{victima.nombre}}</h2>
+            <h4>DNI: {{victima.documento}} </h4>
+            <div class="col-md-8">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <h6 class="mb-0">Domicilio</h6>
+                      </div>
+                      <div class="col-sm-9 text-secondary">
+                        {{victima.domicilio}}
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <h6 class="mb-0">Email</h6>
+                      </div>
+                      <div class="col-sm-9 text-secondary">
+                        {{victima.email}}
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <h6 class="mb-0">Telefono</h6>
+                      </div>
+                      <div class="col-sm-9 text-secondary">
+                        {{victima.telefono}}
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <button type="button" class="btn btn-secondary">Editar</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!--casos-->
+            <h2>Casos</h2>
+            <ul>
+              {% for caso in casos %}
+              <div class="col-md-8">
+                <div class="card mb-4">
+                  <div class = "card-body">
+                    <h5>Caso {{caso.agresor}}</h5>
+                    <div class="row-sm-9 text-secondary">
+                        fecha : {{ caso.fecha }}
+                    </div>      
+                    </br> 
+                    <div class="col-sm-12">
+                      <a class="btn btn-dark" href="./caso" role="button">Ver</a>
+                    </div>
+                    </div>           
+                </div>
+                <hr>
+              </div>
+              {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock content %}        
