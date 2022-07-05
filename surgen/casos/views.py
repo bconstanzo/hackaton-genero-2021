@@ -1,33 +1,10 @@
 from django.shortcuts import render
-
-victima = {
-    "nombre": "Alicia Perez",
-    "domicilio": "Av.Colón 1234",
-    "documento": "30 111 222",
-    "telefono": "+542235112233",
-    "email": "alicia_perez@gmail.com",
-    "fecha_nacimiento": "01/02/1985",
-    # contactos = ... # lista de Contactos
-}
-
-casos = [
-    {
-        "victima": "Alicia",
-        "agresor": "Bartolomé Diaz",
-        "fecha": "12 Noviembre 2021",
-    },
-    {
-        "victima": "Alicia",
-        "agresor": "Darío Martinez",
-        "fecha": "12 de Noviembre 2021",
-    },
-]
+from .models import Caso
 
 # Create your views here.
 def perfil(request):
     context = {
-        "victima" : victima,
-        "casos": casos,
+        "casos": Caso.objects.all(),
     }
     return render(request, "casos/perfil.html", context=context)
 
