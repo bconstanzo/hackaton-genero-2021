@@ -10,7 +10,7 @@ def perfil(request):
 
 def caso(request):
     context = {
-        "caso": casos[0],
+        "caso": Caso.objects.first(),
     }
     return render(request, "casos/caso.html", context=context)
 
