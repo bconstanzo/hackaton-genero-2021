@@ -32,12 +32,11 @@ class Provincias(models.TextChoices):
     # sin especificar
     SIN_ESPECIIFAR      = "None", gettext_lazy("(sin especificar)")
 
-
 class Domicilio(models.Model):
     calle = models.CharField(max_length=100)
     altura = models.IntegerField()
-    piso_depto = models.CharField(max_length=10)
-    codigo_postal = models.CharField(max_length=12)
+    piso_depto = models.CharField(max_length=10, blank=True)
+    codigo_postal = models.CharField(max_length=12, blank=True)
     localidad = models.CharField(max_length=100)
     provincia = models.CharField(
         max_length=4,
@@ -45,24 +44,31 @@ class Domicilio(models.Model):
         default=Provincias.SIN_ESPECIIFAR,
     )
 
+    # algunas ideas:
+    # tipo de domicilio: residencia activa, legal, otro?
+    # fecha_inicio, fecha_fin?  -- para el caso de ManyToMany
 
-class Contacto(models.Model):
-    # muy muy técnicamente, es una Persona con menos atributos
-    nombre = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=24)
-    email = models.CharField(max_length=50, null=True)
+    def __str__(self):
+        return (
+            f"{self.calle} {self.altura}{f' ({self.piso_depto}) ' if self.piso_depto else ''}"
+            f", {self.localidad}"
+        )
 
 
 class Persona(models.Model):
-    nombre = models.CharField(max_length=100)
-    domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)  # podría ser un ManyToMany?
-    documento = models.CharField(max_length=15, null=True)  # cambiar a futuro? va con espacio y sin puntos: DNI 12345678
-    telefono = models.CharField(max_length=24, null=True)
-    email = models.CharField(max_length=50, null=True)
+    nombre = models.CharField(max_length=50)
+    apellido = models.CharField(max_length=50)
+    domicilio = models.ForeignKey(Domicilio, on_delete=models.DO_NOTHING)  # podría ser un ManyToMany?
+    documento = models.CharField(max_length=15, blank=True)  # cambiar a futuro? va con espacio y sin puntos: DNI 12345678
+    telefono = models.CharField(max_length=24, blank=True)
+    email = models.CharField(max_length=50, blank=True)
     fecha_nacimiento = models.DateField(null=True)
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return f"{self.apellido}, {self.nombre}"
 
 
 class Victima(Persona):
@@ -74,19 +80,33 @@ class Agresor(Persona):
     pass
 
 
+class Contacto(models.Model):
+    # muy muy técnicamente, es una Persona con menos atributos
+    victima = models.ForeignKey(Victima, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=24)
+    email = models.CharField(max_length=50, null=True)
+
+
 class Caso(models.Model):
-    victima = models.OneToOneField(Victima, on_delete=models.SET_NULL, null=True)
-    agresor = models.OneToOneField(Agresor, on_delete=models.SET_NULL, null=True)
+    victima = models.ForeignKey(Victima, on_delete=models.SET_NULL, null=True)
+    agresor = models.ManyToManyField(Agresor)
+    fecha = models.DateTimeField()
+
+    def __str__(self):
+        agresores = "; ".join( str(a) for a in self.agresor.all() )
+        return f"{self.victima}, agredida por {agresores}"
 
 
 class Incidencia(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
-    fecha = models.DateField(null=False)
+    fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
     descripcion = models.TextField()
 
 
 class Documento(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
-    fecha = models.DateField(null=False)
+    incidencia = models.ForeignKey(Incidencia, on_delete=models.DO_NOTHING, blank=True, null=True)
+    fecha = models.DateTimeField(null=False)
     descripcion = models.TextField()
     archivo = models.FileField()
