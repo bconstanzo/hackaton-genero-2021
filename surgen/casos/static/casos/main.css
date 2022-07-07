@@ -1,4 +1,4 @@
-body {
+  body {
     background: #fafafa;
     color: #333333;
     margin-top: 5rem;
@@ -83,3 +83,27 @@ body {
     font-size: 2.5rem;
   }
   
+  .timeline {
+    border-left: 3px solid hsl(266, 75%, 36%); /* Esto no aparece!!!!! */
+    position: relative;
+    list-style: none;
+  }
+
+  .timeline .timeline-item {
+    position: relative;
+  }
+
+  .timeline .timeline-item:after {
+    position: absolute;
+    display: block;
+    top: 0;
+  }
+
+  .timeline .timeline-item:after {
+    background-color: hsl(0, 0%, 90%);
+    left: -38px;
+    border-radius: 50%;
+    height: 11px;
+    width: 11px;
+    content: "";
+  }
