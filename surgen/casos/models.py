@@ -102,6 +102,7 @@ class Incidencia(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
     descripcion = models.TextField()
+    nombre = models.TextField() # ver si se deberia incluir o no
 
 
 class Documento(models.Model):
