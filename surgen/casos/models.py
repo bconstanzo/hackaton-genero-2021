@@ -103,6 +103,8 @@ class Incidencia(models.Model):
     fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
     descripcion = models.TextField()
     nombre = models.TextField() # ver si se deberia incluir o no
+    def __str__(self):
+        return self.nombre
 
 
 class Documento(models.Model):
@@ -111,3 +113,5 @@ class Documento(models.Model):
     fecha = models.DateTimeField(null=False)
     descripcion = models.TextField()
     archivo = models.FileField()
+    def __str__(self):
+        return self.archivo.name
