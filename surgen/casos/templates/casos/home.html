@@ -2,13 +2,6 @@
 {% block content %}
     <h1>SUR-Gen home</h1>
     <ul>
-        {% for caso in casos %}
-        <li>{{ caso.victima }} fue agredida por:</li>
-        <ul>
-            {% for agresor in caso.agresor.all %}
-            <li>{{agresor}}</li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
+        <!--TODO agregar login, el registro seria responsabilidad de un administrador-->
     </ul>
 {% endblock content %}
