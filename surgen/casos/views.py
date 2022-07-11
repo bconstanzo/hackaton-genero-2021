@@ -5,18 +5,21 @@ from .models import Documento
 
 # Create your views here.
 def perfil(request):
+    victima = Caso.objects.first().victima
     context = {
-        "victima": Caso.objects.first().victima,
-        "casos": Caso.objects.all(), # esto esta tirando error-> sera por db vacia?
+        "victima": victima,
+        "casos": Caso.objects.filter(victima = victima),
     }
     return render(request, "casos/perfil.html", context=context)
 
 def caso(request):
+    #El historial se compone de elementos con: nombre, descripcion y fecha 
+    caso = Caso.objects.first() # TODO aca seria solo el caso que pido el usuario
     context = {
-        "caso": Caso.objects.first(), # TODO aca seria solo el caso que pido el usuario
-        "historial" : Incidencia.objects.first(), #TODO aca se enviaria un arreglo ordenado de los eventos
-        "incidencias" : Incidencia.objects.first(), # TODO aca se deberian agregar las incidencias que correspondan al caso
-        "documentos" : Documento.objects.first() # TODO aca se deberian agregar los documentos que correspondan al caso
+        "caso": caso, 
+        "historial" : Incidencia.objects.all(), #TODO aca se enviaria un arreglo ordenado de los eventos
+        "incidencias" : Incidencia.objects.filter(caso = caso),
+        "documentos" : Documento.objects.filter(caso = caso) 
     }
     return render(request, "casos/caso.html", context=context)
 
