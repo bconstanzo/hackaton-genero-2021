@@ -2,7 +2,8 @@
 {% block content %}
     <h1>SUR-Gen</h1>
     </br>
-    <h2>Caso {{caso.agresor}}</h2> <!-- aca como son varios no aparece?-->
+    <h2>Caso: {{caso}}
+    </h2> <!--no aparecen-->
     </br>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -55,7 +56,7 @@
               {% for documento in documentos %}
                 <div class="card mb-4">
                     <div class = "card-body">
-                        <h5>{{documento.archivo}}</h5> <!-- ACA SE PODRIA AGREGAR UN ATRIBUTO NOMBRE-->
+                        <h5>{{documento.archivo}}</h5> 
                         <div class="row-sm-9 text-secondary">
                             fecha : {{ documento.fecha }}
                         </div>   
@@ -63,7 +64,7 @@
                             {{documento.descripcion}}
                         </div>    
                         <div class="col-sm-12 text-lg-end">
-                              <button type="button" class="btn btn-primary stretched-link">Descargar</button>
+                              <button type="button" class="btn btn-primary stretched-link" onclick="descargar(documento.archivo)">Descargar</button>
                         </div>
                     </div>           
                 </div>

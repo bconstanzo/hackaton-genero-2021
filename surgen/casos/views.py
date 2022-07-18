@@ -9,8 +9,8 @@ def perfil(request):
     victima = Caso.objects.first().victima
     context = {
         "victima": victima,
-        "contactos": Contacto.objects.filter(victima = victima),
         "casos": Caso.objects.filter(victima = victima),
+        "contactos": Contacto.objects.filter(victima = victima),
     }
     return render(request, "casos/perfil.html", context=context)
 
@@ -20,22 +20,22 @@ def caso(request):
     documentos = Documento.objects.filter(caso = caso) 
     historial = []
     for inc in incidencias :
-        historial.add({
+        historial.append({
             'nombre': inc.nombre,
             'fecha': inc.fecha,
             'descripcion': inc.descripcion
             }
         )
     for doc in documentos :
-        historial.add({
-            'nombre': doc.nombre,
+        historial.append({
+            'nombre': doc.archivo.name,
             'fecha': doc.fecha,
             'descripcion': doc.descripcion
             }
         )
     context = {
         "caso": caso, 
-        "historial" : historial.orderby('-fecha'),
+        "historial" : sorted(historial, key = lambda x: x['fecha']),
         "incidencias" : incidencias,
         "documentos" : documentos 
     }
@@ -50,3 +50,6 @@ def home(request):
 
 def about(request):
     return render(request, "casos/about.html")
+
+def descargar():
+    pass
