@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # agregadas por nosotros:
     'casos.apps.CasosConfig',
+    'usuarios.apps.UsuariosConfig',
+    'crispy_forms',
     # instaladas por default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -128,3 +130,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'casos-perfil'
+
+LOGIN_URL = 'login'

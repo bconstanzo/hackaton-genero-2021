@@ -1,12 +1,20 @@
 from django.shortcuts import render
 from .models import Caso
+from .models import Victima
 from .models import Incidencia
 from .models import Documento
 from .models import Contacto
+from django.contrib.auth.decorators import login_required
+
+from django.http import HttpResponse
+import os
+import mimetypes
 
 # Create your views here.
+@login_required
 def perfil(request):
-    victima = Caso.objects.first().victima
+    victima = Victima.objects.get(usuario = request.user)
+    print(victima)
     context = {
         "victima": victima,
         "casos": Caso.objects.filter(victima = victima),

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -72,7 +73,8 @@ class Persona(models.Model):
 
 
 class Victima(Persona):
-    pass
+    usuario = models.ForeignKey(User, null= True, on_delete=models.CASCADE)
+    # pass
     # contactos = ... # lista de Contactos
 
 
