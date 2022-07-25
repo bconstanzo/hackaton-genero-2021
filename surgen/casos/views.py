@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Caso
 from .models import Victima
 from .models import Incidencia
 from .models import Documento
 from .models import Contacto
 from django.contrib.auth.decorators import login_required
+
 
 from django.http import HttpResponse
 import os
@@ -49,15 +50,25 @@ def caso(request):
     }
     return render(request, "casos/caso.html", context=context)
 
-def home(request):
-    # TODO: Agregar redireccion al que esta logeado
-    #if request.user.is_authenticated: 
-    #    return render(request, "casos/perfil.html")
-    #else: 
+def home(request): 
+    if request.user.is_authenticated and (not request.user.is_superuser): 
+        response = redirect('/perfil')
+        return response
+    else: 
         return render(request, "casos/home.html")
 
 def about(request):
     return render(request, "casos/about.html")
 
-def descargar():
-    pass
+def descargar(filename):
+    print('llego aca')
+    # if filename != '':
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    filepath = BASE_DIR + filename
+    path = open(filepath, 'r')
+    mime_type, _ = mimetypes.guess_type(filepath)
+    # Set the return value of the HttpResponse
+    response = HttpResponse(path, content_type=mime_type)
+    # Set the HTTP header for sending to browser
+    response['Content-Disposition'] = "attachment; filename=%s" % filename
+    return response

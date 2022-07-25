@@ -1,7 +1,35 @@
 {% extends "casos/base.html" %}
 {% block content %}
+<center>
     <h1>SUR-Gen home</h1>
-    <ul>
-        <!--TODO agregar login, el registro seria responsabilidad de un administrador-->
-    </ul>
+    <br>
+    <p> Surgen es un Sistema Unificado de Registros para que las víctimas de violencia de género 
+        puedan administrar los datos y la información de sus casos.</p>
+    <br>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class = "card-body">
+                {% if user.is_superuser %}
+                    <h6 class="mb-0">Estas logeado como supertusuario, cierra sesion o entra a la pagina de administracion</h6>     
+                    </br> 
+                    <div class="col-sm-12">
+                        <a class="btn btn-dark" href="/admin" role="button">Admin</a>
+                    </div>
+                    </br> 
+                {% else %}
+                    <h6 class="mb-0">Entra a tu perfil</h6>     
+                    </br> 
+                    <div class="col-sm-12">
+                        <a class="btn btn-dark" href="{% url 'login' %}" role="button">Login</a>
+                    </div>
+                    </br> 
+                    <small><p> Si no tenes una cuenta acercate a un agente para que pueda registrarte en el sistema </p></small>
+                {% endif %}
+            </div>           
+        </div>
+        <hr>
+      </div>
+
+    
+</center>
 {% endblock content %}
