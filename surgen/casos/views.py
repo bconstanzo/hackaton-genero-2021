@@ -14,14 +14,18 @@ import mimetypes
 # Create your views here.
 @login_required
 def perfil(request):
-    victima = Victima.objects.get(usuario = request.user)
-    print(victima)
-    context = {
-        "victima": victima,
-        "casos": Caso.objects.filter(victima = victima),
-        "contactos": Contacto.objects.filter(victima = victima),
-    }
-    return render(request, "casos/perfil.html", context=context)
+    if request.user.is_superuser:
+        response = redirect('/')
+        return response
+    else:
+        victima = Victima.objects.get(usuario = request.user)
+        print(victima)
+        context = {
+            "victima": victima,
+            "casos": Caso.objects.filter(victima = victima),
+            "contactos": Contacto.objects.filter(victima = victima),
+        }
+        return render(request, "casos/perfil.html", context=context)
 
 def caso(request):
     caso = Caso.objects.first() # TODO aca seria solo el caso que pido el usuario
