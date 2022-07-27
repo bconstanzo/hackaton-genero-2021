@@ -68,7 +68,7 @@ def descargar(filename):
     print('llego aca')
     # if filename != '':
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filepath = BASE_DIR + filename
+    filepath = BASE_DIR +"/" + filename
     path = open(filepath, 'r')
     mime_type, _ = mimetypes.guess_type(filepath)
     # Set the return value of the HttpResponse

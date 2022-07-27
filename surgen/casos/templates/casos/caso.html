@@ -64,7 +64,7 @@
                             {{documento.descripcion}}
                         </div>    
                         <div class="col-sm-12 text-lg-end">
-                              <button type="button" class="btn btn-primary stretched-link" onclick="descargar(documento.archivo)">Descargar</button>
+                              <a href="{% url 'descargar' documento.archivo%}"> <button type="button" class="btn btn-primary stretched-link">Descargar</button> </a>
                         </div>
                     </div>           
                 </div>
