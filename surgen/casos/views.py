@@ -5,7 +5,7 @@ from .models import Incidencia
 from .models import Documento
 from .models import Contacto
 from django.contrib.auth.decorators import login_required
-
+from .forms import PerfilForm
 
 from django.http import HttpResponse
 import os
@@ -64,7 +64,20 @@ def home(request):
 def about(request):
     return render(request, "casos/about.html")
 
-def descargar(filename):
+
+def editar_perfil(request):
+    victima = Victima.objects.get(usuario = request.user)
+    form = PerfilForm(request.POST or None, request.FILES or None, instance=victima)
+    context = {"form" : form,}
+    if form.is_valid():
+        form.save()
+        response = redirect('/perfil')
+        return response
+    return render(request, "casos/editar_perfil.html", context = context)
+
+
+
+def descargar(request, filename):
     print('llego aca')
     # if filename != '':
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

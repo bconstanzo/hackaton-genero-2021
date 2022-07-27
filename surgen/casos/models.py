@@ -74,9 +74,6 @@ class Persona(models.Model):
 
 class Victima(Persona):
     usuario = models.ForeignKey(User, null= True, on_delete=models.CASCADE)
-    # pass
-    # contactos = ... # lista de Contactos
-
 
 class Agresor(Persona):
     pass
