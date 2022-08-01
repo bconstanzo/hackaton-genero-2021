@@ -27,8 +27,8 @@ def perfil(request):
         }
         return render(request, "casos/perfil.html", context=context)
 
-def caso(request):
-    caso = Caso.objects.first() # TODO aca seria solo el caso que pido el usuario
+def caso(request,id):
+    caso = Caso.objects.get( id = id) # TODO aca seria solo el caso que pido el usuario
     incidencias = Incidencia.objects.filter(caso = caso)
     documentos = Documento.objects.filter(caso = caso) 
     historial = []
@@ -78,14 +78,13 @@ def editar_perfil(request):
 
 
 def descargar(request, filename):
-    print('llego aca')
-    # if filename != '':
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    filepath = BASE_DIR +"/" + filename
-    path = open(filepath, 'r')
-    mime_type, _ = mimetypes.guess_type(filepath)
-    # Set the return value of the HttpResponse
-    response = HttpResponse(path, content_type=mime_type)
-    # Set the HTTP header for sending to browser
-    response['Content-Disposition'] = "attachment; filename=%s" % filename
-    return response
+    if filename != '':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filepath = BASE_DIR +"/" + filename
+        path = open(filepath, 'r')
+        mime_type, _ = mimetypes.guess_type(filepath)
+        response = HttpResponse(path, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        return response
+    else:
+        pass # TODO Aca deberia dar un aviso o devolver un error.
