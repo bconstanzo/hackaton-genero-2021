@@ -1,23 +1,45 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Victima
+from .models import Domicilio, Victima, Provincias
 from .models import Contacto
 
 
 class PerfilForm(ModelForm):
 	class Meta:
 		model = Victima
-		fields = ('domicilio', 'email', 'telefono')
+		fields = ('email', 'telefono')
 		labels = {
-			'domicilio': '',
 			'email': '',
 			'telefono': '',	
 		}
 		widgets = {
-			'domicilio': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Domicilio'}),
 			'email': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Mail'}),
 			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
 		}
+
+
+class DomicilioForm(ModelForm):
+	
+	provincia= forms.CharField(label='Provincia', widget=forms.Select(choices=Provincias.choices))
+	class Meta:
+		model = Domicilio
+		fields = ('calle', 'altura', 'piso_depto', 'codigo_postal', 'localidad', 'provincia')
+		labels = {
+			'calle' :'',
+			'altura':'', 
+			'piso_depto':'', 
+			'codigo_postal':'',
+			'localidad':'',
+			'provincia':'',
+		}
+		widgets = {
+			'calle': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Calle'}),
+			'altura': forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Altura'}),
+			'piso_depto': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Piso-Departamento'}),
+			'codigo_postal': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Codigo postal'}),
+			'localidad': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Localidad'}),
+		}
+
 
 class ContactoForm(ModelForm):
 	class Meta:

@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Caso
+from .models import Caso, Domicilio
 from .models import Victima
 from .models import Incidencia
 from .models import Documento
 from .models import Contacto
 from django.contrib.auth.decorators import login_required
-from .forms import PerfilForm
-
+from .forms import DomicilioForm, PerfilForm
 from django.http import HttpResponse
 import os
 import mimetypes
@@ -67,10 +66,16 @@ def about(request):
 
 def editar_perfil(request):
     victima = Victima.objects.get(usuario = request.user)
-    form = PerfilForm(request.POST or None, request.FILES or None, instance=victima)
-    context = {"form" : form,}
-    if form.is_valid():
-        form.save()
+    domicilio = Domicilio.objects.get(victima = victima)
+    form_perfil = PerfilForm(request.POST or None, request.FILES or None, instance=victima)
+    form_domicilio = DomicilioForm(request.POST or None, request.FILES or None, instance=domicilio)
+    context = {
+        "form_perfil" : form_perfil,
+        "form_domicilio" : form_domicilio,
+    }
+    if form_perfil.is_valid() and form_domicilio.is_valid():
+        form_perfil.save()
+        form_domicilio.save()
         response = redirect('/perfil')
         return response
     return render(request, "casos/editar_perfil.html", context = context)
@@ -86,5 +91,3 @@ def descargar(request, filename):
         response = HttpResponse(path, content_type=mime_type)
         response['Content-Disposition'] = "attachment; filename=%s" % filename
         return response
-    else:
-        pass # TODO Aca deberia dar un aviso o devolver un error.

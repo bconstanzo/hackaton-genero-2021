@@ -4,12 +4,17 @@
     {% if user.is_authenticated %}
         <h1>Editar Perfil:</h1>
         <br/>
+        <h5>Actualizar datos de contacto:</h5>
+        <br/>
         <form action="" method=POST enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form_perfil.as_p }}
             <br/>
-            <input type="submit" value="Update" class="btn btn-secondary">
-
+            <h5>Cambiar domicilio:</h5>
+            <br/>
+            {{ form_domicilio.as_p }}
+        <br/>
+        <input type="submit" value="Update" class="btn btn-secondary">
     {% else %}
         <h1>Sorry! You Must Be Logged In To View This Page...</h1>
         <a href="{% url 'login' %}">Login Here</a>
