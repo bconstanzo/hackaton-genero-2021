@@ -5,7 +5,7 @@ from .models import Incidencia
 from .models import Documento
 from .models import Contacto
 from django.contrib.auth.decorators import login_required
-from .forms import DomicilioForm, PerfilForm
+from .forms import DomicilioForm, PerfilForm, ContactoForm
 from django.http import HttpResponse
 import os
 import mimetypes
@@ -80,7 +80,18 @@ def editar_perfil(request):
         return response
     return render(request, "casos/editar_perfil.html", context = context)
 
-
+def agregar_contacto(request):
+    victima = Victima.objects.get(usuario = request.user)
+    contacto = Contacto(victima = victima, nombre ='', telefono='', email='')
+    form_contacto = ContactoForm(request.POST or None, request.FILES or None, instance=contacto)
+    context = {
+        "form_contacto" : form_contacto,
+    }
+    if form_contacto.is_valid():
+        form_contacto.save()
+        response = redirect('/perfil')
+        return response
+    return render(request, "casos/agregar_contacto.html", context = context)
 
 def descargar(request, filename):
     if filename != '':
