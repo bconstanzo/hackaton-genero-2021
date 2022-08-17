@@ -93,6 +93,19 @@ def agregar_contacto(request):
         return response
     return render(request, "casos/agregar_contacto.html", context = context)
 
+def editar_contacto(request,id_contacto):
+    victima = Victima.objects.get(usuario = request.user)
+    contacto = Contacto.objects.get(victima = victima, id = id_contacto)
+    form_contacto = ContactoForm(request.POST or None, request.FILES or None, instance=contacto)
+    context = {
+        "form_contacto" : form_contacto,
+    }
+    if form_contacto.is_valid():
+        form_contacto.save()
+        response = redirect('/perfil')
+        return response
+    return render(request, "casos/editar_contacto.html", context = context)
+
 def descargar(request, filename):
     if filename != '':
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -63,10 +63,13 @@
                                   <br>
                                   Mail: {{contacto.email}}
                                 </div>
+                                <div class="col-sm-12 text-lg-end">
+                                  <a href="{% url 'casos-editar_contacto' contacto.id%}"> <button type="button" class="btn btn-outline-secondary btn-xs">Editar</button> </a>
+                                </div>
                               </div>
                               <hr>
                             {% endfor %}
-                            <a class="btn btn-outline-secondary" href="/agregar_contacto" role="button">Agregar</a>
+                            <a class="btn btn-secondary" href="/agregar_contacto" role="button">Agregar</a>
                           </div>
                         </div>
                       </div>
