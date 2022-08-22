@@ -1,3 +1,4 @@
+import mimetypes
 from django.db import models
 from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import User
@@ -32,6 +33,12 @@ class Provincias(models.TextChoices):
     TUCUMAN             = "AR-T", gettext_lazy("Tucumán")
     # sin especificar
     SIN_ESPECIIFAR      = "None", gettext_lazy("(sin especificar)")
+
+
+class Estados(models.TextChoices):
+    ABIERTO            = "ABIERTO", gettext_lazy("Abierto")
+    CERRADO            = "CERRADO", gettext_lazy("Cerrado")
+
 
 class Domicilio(models.Model):
     calle = models.CharField(max_length=100)
@@ -75,6 +82,7 @@ class Persona(models.Model):
 class Victima(Persona):
     usuario = models.ForeignKey(User, null= True, on_delete=models.CASCADE)
 
+
 class Agresor(Persona):
     pass
 
@@ -87,16 +95,22 @@ class Contacto(models.Model):
     email = models.CharField(max_length=50, null=True)
 
 
+#Un caso es una causa penal
 class Caso(models.Model):
     victima = models.ForeignKey(Victima, on_delete=models.SET_NULL, null=True)
     agresor = models.ManyToManyField(Agresor)
     fecha = models.DateTimeField()
-
+    estado = models.CharField(
+        max_length=7,
+        choices=Estados.choices,
+        default=Estados.ABIERTO,
+    )
     def __str__(self):
         agresores = "; ".join( str(a) for a in self.agresor.all() )
         return f"{self.victima}, agredida por {agresores}"
 
 
+ #Una incidencia seria un tramite judcial que tiene asociados documentos.
 class Incidencia(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
@@ -112,5 +126,14 @@ class Documento(models.Model):
     fecha = models.DateTimeField(null=False)
     descripcion = models.TextField()
     archivo = models.FileField()
+    mimetype = models.CharField(max_length=256) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
     def __str__(self):
         return self.archivo.name
+
+
+class Nota(models.Model):
+    caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(null=False)  
+    descripcion = models.TextField()
+    def __str__(self):
+        return self.descripcion
