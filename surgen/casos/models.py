@@ -133,7 +133,7 @@ class Documento(models.Model):
 
 class Nota(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(null=False)  
+    fecha = models.DateField(null=False)  
     descripcion = models.TextField()
     def __str__(self):
         return self.descripcion
