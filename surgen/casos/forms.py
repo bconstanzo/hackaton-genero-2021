@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Domicilio, Victima, Provincias
+from .models import Domicilio, Nota, Victima, Provincias
 from .models import Contacto
 
 
@@ -57,4 +57,25 @@ class ContactoForm(ModelForm):
 			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
 		}
 
+class DateInput(forms.DateInput):
+	input_type = 'date'
+	date_effet = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'), label='Date effet')
+
+class NotaForm(ModelForm):
+	class Meta:
+		model = Nota
+		fields = ('fecha', 'descripcion')
+		labels = {
+			'fecha': '',
+			'descripcion': '',	
+		}
+		widgets = {
+			'fecha': forms.DateInput(
+				format=('%Y-%m-%d'),
+				attrs={'class': 'form-control', 
+				'placeholder': 'Fecha',
+				'type': 'date'
+				}),
+			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nota'}),
+		}
 

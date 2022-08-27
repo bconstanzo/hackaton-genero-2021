@@ -2,18 +2,18 @@
 {% block content %}
     <h1>SUR-Gen</h1>
     </br>
-    <h2>Caso: {{caso}}
-    </h2> <!--no aparecen-->
+    <h2>Causa: {{caso}}
+    </h2> 
     </br>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
         <button class="nav-link active" id="hist-tab" data-bs-toggle="tab" data-bs-target="#hist" type="button" role="tab" aria-controls="hist" aria-selected="true">Historico</button>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="incidencias-tab" data-bs-toggle="tab" data-bs-target="#incidencias" type="button" role="tab" aria-controls="incidencias" aria-selected="false">Incidencias</button>
+        <button class="nav-link" id="notas-tab" data-bs-toggle="tab" data-bs-target="#notas" type="button" role="tab" aria-controls="incidencias" aria-selected="false">Mis Notas</button>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="documentos-tab" data-bs-toggle="tab" data-bs-target="#documentos" type="button" role="tab" aria-controls="documentos" aria-selected="false">Documentos</button>
+        <button class="nav-link" id="recursos-tab" data-bs-toggle="tab" data-bs-target="#recursos" type="button" role="tab" aria-controls="recursos" aria-selected="false">Recursos</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -29,47 +29,41 @@
                     </li>
                 {% endfor %}
             </ul>
+            <br>
+            <div class="col-sm-12 text-lg-end">
+                <a href="{% url 'casos-documentos' caso.id -1%}"> <button type="button" class="btn btn-primary">Ver Documentos</button> </a>
+            </div>
+            <br>
         </div>
-        <!-- Incidencias-->
-        <div class="tab-pane fade" id="incidencias" role="tabpanel" aria-labelledby="incidencias-tab">
+        <!-- Mis notas-->
+        <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">
             <br>
             <ul>
-              {% for incidencia in incidencias %}
-                <div class="card mb-4">
-                    <div class = "card-body">
-                        <h5>{{incidencia.nombre}}</h5>
-                        <div class="row-sm-9 text-secondary">
-                            fecha : {{ incidencia.fecha }}
-                        </div>   
-                        <div class="row-sm-9">
-                            {{incidencia.descripcion}}
-                        </div>    
-                    </div>           
-                </div>
-              {% endfor %}
+                {% for nota in notas %}
+                    <div class="card mb-4">
+                        <div class = "card-body">
+                            <h5>{{nota.fecha}}</h5>   
+                            <div class="row-sm-9">
+                                {{nota.descripcion}}
+                            </div>    
+                        </div>           
+                    </div>
+                {% endfor %}
             </ul>
-        </div>
-        <!-- Documentos-->
-        <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
             <br>
-            <ul>
-              {% for documento in documentos %}
-                <div class="card mb-4">
-                    <div class = "card-body">
-                        <h5>{{documento.archivo}}</h5> 
-                        <div class="row-sm-9 text-secondary">
-                            fecha : {{ documento.fecha }}
-                        </div>   
-                        <div class="row-sm-9">
-                            {{documento.descripcion}}
-                        </div>    
-                        <div class="col-sm-12 text-lg-end">
-                              <a href="{% url 'descargar' documento.archivo%}"> <button type="button" class="btn btn-primary stretched-link">Descargar</button> </a>
-                        </div>
-                    </div>           
-                </div>
-              {% endfor %}
-            </ul>
+            <div class="col-sm-12 text-lg-end">
+                <a href="{% url 'casos-agregar_nota' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Agregar</button> </a>
+            </div>
+            <br>  
+            <div class="col-sm-12 text-lg">
+                <a href=""> <button type="button" class="btn btn-primary">Descargar</button> </a>
+            </div>
+            <br>
+        </div>
+        <!-- Recursos-->
+        <div class="tab-pane fade" id="recursos" role="tabpanel" aria-labelledby="recursos-tab">
+            <br>
+            <div>Recursos</div>
         </div>
     </div>
     

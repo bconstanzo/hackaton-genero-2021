@@ -1,11 +1,13 @@
+from asyncio.windows_events import NULL
 from django.shortcuts import render, redirect
 from .models import Caso, Domicilio
 from .models import Victima
 from .models import Incidencia
 from .models import Documento
 from .models import Contacto
+from .models import Nota
 from django.contrib.auth.decorators import login_required
-from .forms import DomicilioForm, PerfilForm, ContactoForm
+from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
 from django.http import HttpResponse
 import os
 import mimetypes
@@ -28,6 +30,7 @@ def perfil(request):
 
 def caso(request,id):
     caso = Caso.objects.get( id = id) # TODO aca seria solo el caso que pido el usuario
+    notas = Nota.objects.filter(caso = caso)
     incidencias = Incidencia.objects.filter(caso = caso)
     documentos = Documento.objects.filter(caso = caso) 
     historial = []
@@ -48,10 +51,24 @@ def caso(request,id):
     context = {
         "caso": caso, 
         "historial" : sorted(historial, key = lambda x: x['fecha']),
-        "incidencias" : incidencias,
+        "notas" : notas,
         "documentos" : documentos 
     }
     return render(request, "casos/caso.html", context=context)
+
+def documentos(request,id_caso, id_doc):
+    caso = Caso.objects.get( id = id_caso) # TODO aca seria solo el caso que pido el usuario
+    documentos = Documento.objects.filter(caso = caso) 
+    if(id_doc != '-1'):
+        doc_actual =  Documento.objects.get(id = id_doc)
+    else:
+        doc_actual = NULL,
+    context = {
+        "caso": caso, 
+        "documentos" : documentos,
+        "doc_actual" : doc_actual
+    }
+    return render(request, "casos/documentos.html", context=context)
 
 def home(request): 
     if request.user.is_authenticated and (not request.user.is_superuser): 
@@ -92,6 +109,20 @@ def agregar_contacto(request):
         response = redirect('/perfil')
         return response
     return render(request, "casos/agregar_contacto.html", context = context)
+
+def agregar_nota(request, id):
+
+    caso = Caso.objects.get( id = id)
+    nota = Nota(caso = caso, fecha ='', descripcion='')
+    form_nota = NotaForm(request.POST or None, request.FILES or None, instance=nota)
+    context = {
+        "form_nota" : form_nota,
+    }
+    if form_nota.is_valid():
+        form_nota.save()
+        response = redirect('/perfil/caso/'+id)
+        return response
+    return render(request, "casos/agregar_nota.html", context = context)
 
 def editar_contacto(request,id_contacto):
     victima = Victima.objects.get(usuario = request.user)
