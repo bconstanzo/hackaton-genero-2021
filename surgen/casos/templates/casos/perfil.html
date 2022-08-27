@@ -80,7 +80,7 @@
         </div>
         <div class="col-md-6">
             <!--casos-->
-            <h2>Casos</h2>
+            <h2>Mis Causas</h2>
             <ul>
               {% for caso in casos %}
                 <div class="col-md-8">
@@ -89,7 +89,10 @@
                       <h6 class="mb-0">{{caso}}</h6>
                       <div class="row-sm-9 text-secondary">
                           fecha : {{ caso.fecha }}
-                      </div>      
+                      </div>
+                      <div class="row-sm-9 text-secondary">
+                        Estado : {{ caso.estado }}
+                      </div>       
                       </br> 
                       <div class="col-sm-12">
                         <a class="btn btn-dark" href="{% url 'casos-caso' caso.id%}" role="button">Ver</a>
