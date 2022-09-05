@@ -2,8 +2,10 @@
 {% block content %}
     <h1>SUR-Gen</h1>
     </br>
-    <h2>Documentos del caso: {{caso}}
-    </h2> 
+    <h2>Documentos del caso: {{caso}}</h2> 
+    <div class="col-sm text-lg-end">
+        <a href="{% url 'casos-caso' caso.id%}"> <button type="button" class="btn btn-secondary">Volver</button> </a>
+    </div>
     </br>
     <!-- Documentos-->
     <div class="container">
@@ -29,10 +31,10 @@
     <div class="col-sm">
         <div class="card mb-4"> 
             {% if doc_actual == NULL %}
-                <div>Contenido de doc</div> <!-- Nunca entra aca, cuando entro por primera vez sin un doc seleccionado no lo toma como null lo toma como (0,)-->
+                <div> seleccionar archivo </div> <!-- Nunca entra aca, cuando entro por primera vez sin un doc seleccionado no lo toma como null lo toma como (0,)-->
             {% else %}
                 <div>
-                    <h3>{{doc_actual}}</h3>
+                    <h3>{{doc_actual.archivo.name}}</h3>
                     <!-- TODO -->
                 </div>
             {% endif %}

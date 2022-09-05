@@ -39,6 +39,26 @@ class Estados(models.TextChoices):
     ABIERTO            = "ABIERTO", gettext_lazy("Abierto")
     CERRADO            = "CERRADO", gettext_lazy("Cerrado")
 
+class Hijos(models.TextChoices):
+    NC            = "NC", gettext_lazy("No corresponde")
+    SI            = "SI", gettext_lazy("Si")
+    NO            = "NO", gettext_lazy("No")
+
+class Relaciones(models.TextChoices):
+    FAMILIAR            = "FAMILIAR", gettext_lazy("Familiar")
+    PAREJA            = "PAREJA", gettext_lazy("Pareja")
+    EX_PAREJA            = "EX_PAREJA", gettext_lazy("Ex pareja")
+    FAMILIAR_PAREJA            = "FAMILIAR_PAREJA", gettext_lazy("Familiar de la pareja")
+    FAMILIAR_EX_PAREJA            = "FAMILIAR_EX_PAREJA", gettext_lazy("Familiar de la ex pareja")
+    JEFE            = "JEFE", gettext_lazy("Jefe")
+    VECINO            = "VECINO", gettext_lazy("Vecino")
+    PROFESOR            = "PROFESOR", gettext_lazy("Profesor")
+    PROPIETARIO            = "PROPIETARIO", gettext_lazy("Propietario del inmueble de residencia")
+    COMPAÑERO            = "COMPAÑERO", gettext_lazy("Compañero")
+    AMIGO            = "AMIGO", gettext_lazy("Amigo")
+    OTRO            = "OTRO", gettext_lazy("OTRO")
+
+
 
 class Domicilio(models.Model):
     calle = models.CharField(max_length=100)
@@ -84,7 +104,16 @@ class Victima(Persona):
 
 
 class Agresor(Persona):
-    pass
+    relacion = models.CharField(
+        max_length=30,
+        choices=Relaciones.choices,
+        default=Relaciones.OTRO,
+    )
+    hijos_en_comun = models.CharField(
+        max_length=30,
+        choices=Hijos.choices,
+        default=Hijos.NC,
+    )
 
 
 class Contacto(models.Model):
@@ -126,7 +155,7 @@ class Documento(models.Model):
     fecha = models.DateTimeField(null=False)
     descripcion = models.TextField()
     archivo = models.FileField()
-    mimetype = models.CharField(max_length=256) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
+    mimetype = models.CharField(max_length=256, blank=True, null=True) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
     def __str__(self):
         return self.archivo.name
 
