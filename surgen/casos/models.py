@@ -2,6 +2,7 @@ import mimetypes
 from django.db import models
 from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import User
+from datetime import datetime  
 
 # Create your models here.
 
@@ -162,7 +163,8 @@ class Documento(models.Model):
 
 class Nota(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
-    fecha = models.DateField(null=False)  
+    fecha = models.DateField(null=True) 
+    fecha_post = models.DateTimeField(blank=True, default=datetime.now) 
     descripcion = models.TextField()
     def __str__(self):
         return self.descripcion
