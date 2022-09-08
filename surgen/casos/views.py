@@ -58,17 +58,26 @@ def caso(request,id):
     return render(request, "casos/caso.html", context=context)
 
 @login_required
-def documentos(request,id_caso, id_doc):
-    caso = Caso.objects.get( id = id_caso) # TODO aca seria solo el caso que pido el usuario
+def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy solo mostrando los TXT
+    caso = Caso.objects.get( id = id_caso)
     documentos = Documento.objects.filter(caso = caso) 
     if(id_doc != '-1'):
         doc_actual =  Documento.objects.get(id = id_doc)
+        filename = doc_actual.archivo.name
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filepath = BASE_DIR +"/" + filename
+        f = open(filepath, 'r')
+        file_content = f.read()
+        f.close()
     else:
         doc_actual = NULL,
+        file_content = ''
+
     context = {
         "caso": caso, 
         "documentos" : documentos,
-        "doc_actual" : doc_actual
+        "doc_actual" : doc_actual,
+        'file_content': file_content
     }
     return render(request, "casos/documentos.html", context=context)
 
