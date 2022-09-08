@@ -152,3 +152,22 @@ def descargar(request, filename):
         response = HttpResponse(path, content_type=mime_type)
         response['Content-Disposition'] = "attachment; filename=%s" % filename
         return response
+
+@login_required
+def descargar_pdf_notas(request, id_caso):
+    caso =  Caso.objects.get(id = id_caso)
+    notas = Nota.objects.filter(caso = caso)
+    template_path = 'casos/descargar_pdf_notas.html'
+    template = get_template(template_path)
+    context = {
+        'notas': notas,
+        'caso' : caso
+    }
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "Mis_notas.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

@@ -13,4 +13,5 @@ urlpatterns = [
     path("perfil/caso/documentos/<id_caso>/<id_doc>", views.documentos, name="casos-documentos"),
     path("editar_contacto/<id_contacto>", views.editar_contacto, name="casos-editar_contacto"),
     path("descargar/<filename>", views.descargar, name="descargar"),
+    path("perfil/caso/descargar_notas/<id_caso>", views.descargar_pdf_notas, name="casos-descargar_pdf_notas"),
 ]
