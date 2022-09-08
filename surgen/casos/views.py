@@ -1,16 +1,16 @@
-from asyncio.windows_events import NULL
-from django.shortcuts import render, redirect
-from .models import Caso, Domicilio
-from .models import Victima
-from .models import Incidencia
-from .models import Documento
-from .models import Contacto
-from .models import Nota
-from django.contrib.auth.decorators import login_required
-from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
-from django.http import HttpResponse
+from fileinput import filename
 import os
 import mimetypes
+from asyncio.windows_events import NULL
+from .models import Caso, Domicilio, Victima, Incidencia, Documento, Contacto, Nota
+from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.conf import settings
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
 
 # Create your views here.
 @login_required
@@ -28,6 +28,7 @@ def perfil(request):
         }
         return render(request, "casos/perfil.html", context=context)
 
+@login_required
 def caso(request,id):
     caso = Caso.objects.get( id = id) # TODO aca seria solo el caso que pido el usuario
     notas = Nota.objects.filter(caso = caso)
@@ -56,6 +57,7 @@ def caso(request,id):
     }
     return render(request, "casos/caso.html", context=context)
 
+@login_required
 def documentos(request,id_caso, id_doc):
     caso = Caso.objects.get( id = id_caso) # TODO aca seria solo el caso que pido el usuario
     documentos = Documento.objects.filter(caso = caso) 
@@ -80,7 +82,7 @@ def home(request):
 def about(request):
     return render(request, "casos/about.html")
 
-
+@login_required
 def editar_perfil(request):
     victima = Victima.objects.get(usuario = request.user)
     domicilio = Domicilio.objects.get(victima = victima)
@@ -97,6 +99,7 @@ def editar_perfil(request):
         return response
     return render(request, "casos/editar_perfil.html", context = context)
 
+@login_required
 def agregar_contacto(request):
     victima = Victima.objects.get(usuario = request.user)
     contacto = Contacto(victima = victima, nombre ='', telefono='', email='')
@@ -110,9 +113,10 @@ def agregar_contacto(request):
         return response
     return render(request, "casos/agregar_contacto.html", context = context)
 
+@login_required
 def agregar_nota(request, id):
 
-    caso = Caso.objects.get( id = id)
+    caso = Caso.objects.get(id = id)
     nota = Nota(caso = caso, fecha ='', descripcion='')
     form_nota = NotaForm(request.POST or None, request.FILES or None, instance=nota)
     context = {
@@ -124,6 +128,7 @@ def agregar_nota(request, id):
         return response
     return render(request, "casos/agregar_nota.html", context = context)
 
+@login_required
 def editar_contacto(request,id_contacto):
     victima = Victima.objects.get(usuario = request.user)
     contacto = Contacto.objects.get(victima = victima, id = id_contacto)
@@ -137,6 +142,7 @@ def editar_contacto(request,id_contacto):
         return response
     return render(request, "casos/editar_contacto.html", context = context)
 
+@login_required
 def descargar(request, filename):
     if filename != '':
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
