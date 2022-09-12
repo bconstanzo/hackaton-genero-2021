@@ -61,14 +61,19 @@ def caso(request,id):
 def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy solo mostrando los TXT
     caso = Caso.objects.get( id = id_caso)
     documentos = Documento.objects.filter(caso = caso) 
-    if(id_doc != '-1'):
+    imagen = ''
+    if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
         doc_actual =  Documento.objects.get(id = id_doc)
         filename = doc_actual.archivo.name
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         filepath = BASE_DIR +"/" + filename
+        #If mimetyoe = txt
         f = open(filepath, 'r')
         file_content = f.read()
         f.close()
+        #if mimetype =imagen
+        imagen = filepath
+
     else:
         doc_actual = NULL,
         file_content = ''
@@ -77,7 +82,8 @@ def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy so
         "caso": caso, 
         "documentos" : documentos,
         "doc_actual" : doc_actual,
-        'file_content': file_content
+        'file_content': file_content,
+        "imagen" : imagen
     }
     return render(request, "casos/documentos.html", context=context)
 

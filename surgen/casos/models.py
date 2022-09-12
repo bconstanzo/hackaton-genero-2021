@@ -1,8 +1,10 @@
-import mimetypes
+import magic
+import os
 from django.db import models
 from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import User
 from datetime import datetime  
+from django.db.models.signals import pre_save, post_save
 
 # Create your models here.
 
@@ -159,6 +161,13 @@ class Documento(models.Model):
     mimetype = models.CharField(max_length=256, blank=True, null=True) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
     def __str__(self):
         return self.archivo.name
+    
+def doc_mimetype(sender, created, instance , update_fields=["mimetype"], **kwargs):
+    doc = Documento.objects.filter(id = instance.id)
+    mime = magic.from_file(instance.archivo.path, mime=True)
+    doc.update(mimetype = mime)
+
+post_save.connect(doc_mimetype, sender=Documento)
 
 
 class Nota(models.Model):
