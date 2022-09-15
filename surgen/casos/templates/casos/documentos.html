@@ -1,8 +1,11 @@
 {% extends "casos/base.html" %}
+{% load static %} 
 {% block content %}
-    <h1>SUR-Gen</h1>
+    <div class="col text-center"><h1>SUR-Gen</h1></div>
+    
     </br>
-    <h2>Documentos del caso: {{caso}}</h2> 
+    <h2>Documentos de la causa: </h2> 
+    <h3>{{caso}}</h3>
     <div class="col-sm text-lg-end">
         <a href="{% url 'casos-caso' caso.id%}"> <button type="button" class="btn btn-secondary">Volver</button> </a>
     </div>
@@ -16,10 +19,10 @@
             <li class="list-group-item">
                 <div class='container-side-by-side'>
                     <div class="row">
-                    <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento.archivo}}</a></div>
+                    <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento}}</a></div>
                     <div class="col-sm">
                         <div class="col-sm text-lg-end">
-                            <a href="{% url 'descargar' documento.archivo%}"> <button type="button" class="btn btn-primary"><i class="fa fa-download"></i></button> </a>
+                            <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-primary"><i class="fa fa-download"></i></button> </a>
                         </div>
                     </div>
                     </div>
@@ -30,12 +33,45 @@
     </div>
     <div class="col-sm">
         <div class="card mb-4"> 
-            {% if doc_actual == NULL %}
-                <div> seleccionar archivo </div> <!-- Nunca entra aca, cuando entro por primera vez sin un doc seleccionado no lo toma como null lo toma como (0,)-->
+            {% if id_doc == '-1' %}
+            <div class="card mb-4">
+                <div class = "card-body" >
+                    <div class="col text-center">
+                        <p>Seleccionar archivo</p>
+                    </div>
+                </div>
+                </div>
             {% else %}
                 <div>
-                    <h3>{{doc_actual.archivo.name}}</h3>
-                    <div>{{file_content}}</div>
+                    
+                    {% if doc_actual.mimetype ==  "text/plain" %}
+                        <div class="card mb-4">
+                        <div class = "card-body" >
+                            <div class="col text-center">
+                                <h3>{{doc_actual}}</h3>
+                            </div>
+                            <div>{{file_content}}</div>
+                        </div>
+                        </div>
+                    {% elif doc_actual.mimetype ==  "image/jpeg" %}
+                    <div class="card mb-4">
+                        <div class = "card-body" >
+                            <div class="col text-center">
+                                <h3>{{doc_actual}}</h3>
+                            </div>
+                            <img src= "{{doc_actual.archivo.url}}" width="650" >
+                        </div>
+                        </div>
+                    {% else %}
+                        <div class="card mb-4">
+                        <div class = "card-body" >
+                            <div class="col text-center">
+                                <p>No es posible visualizar el documento</p>
+                                <a href="{% url 'descargar' doc_actual.id %}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
+                            </div>
+                        </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

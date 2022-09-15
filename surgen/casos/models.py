@@ -157,10 +157,10 @@ class Documento(models.Model):
     incidencia = models.ForeignKey(Incidencia, on_delete=models.DO_NOTHING, blank=True, null=True)
     fecha = models.DateTimeField(null=False)
     descripcion = models.TextField()
-    archivo = models.FileField()
+    archivo = models.FileField(upload_to="media")
     mimetype = models.CharField(max_length=256, blank=True, null=True) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
     def __str__(self):
-        return self.archivo.name
+        return os.path.basename(self.archivo.name)
     
 def doc_mimetype(sender, created, instance , update_fields=["mimetype"], **kwargs):
     doc = Documento.objects.filter(id = instance.id)

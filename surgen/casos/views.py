@@ -44,7 +44,7 @@ def caso(request,id):
         )
     for doc in documentos :
         historial.append({
-            'nombre': doc.archivo.name,
+            'nombre': doc,
             'fecha': doc.fecha,
             'descripcion': doc.descripcion
             }
@@ -61,19 +61,16 @@ def caso(request,id):
 def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy solo mostrando los TXT
     caso = Caso.objects.get( id = id_caso)
     documentos = Documento.objects.filter(caso = caso) 
-    imagen = ''
+    file_content = ''
     if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
         doc_actual =  Documento.objects.get(id = id_doc)
         filename = doc_actual.archivo.name
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         filepath = BASE_DIR +"/" + filename
-        #If mimetyoe = txt
-        f = open(filepath, 'r')
-        file_content = f.read()
-        f.close()
-        #if mimetype =imagen
-        imagen = filepath
-
+        if doc_actual.mimetype ==  "text/plain":
+            f = open(filepath, 'r')
+            file_content = f.read()
+            f.close()
     else:
         doc_actual = NULL,
         file_content = ''
@@ -83,7 +80,7 @@ def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy so
         "documentos" : documentos,
         "doc_actual" : doc_actual,
         'file_content': file_content,
-        "imagen" : imagen
+        'id_doc' :id_doc,
     }
     return render(request, "casos/documentos.html", context=context)
 
@@ -158,11 +155,13 @@ def editar_contacto(request,id_contacto):
     return render(request, "casos/editar_contacto.html", context = context)
 
 @login_required
-def descargar(request, filename):
+def descargar(request, id_doc):
+    doc =  Documento.objects.get(id = id_doc)
+    filename = doc.archivo.name
     if filename != '':
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         filepath = BASE_DIR +"/" + filename
-        path = open(filepath, 'r')
+        path = open(filepath, 'rb')
         mime_type, _ = mimetypes.guess_type(filepath)
         response = HttpResponse(path, content_type=mime_type)
         response['Content-Disposition'] = "attachment; filename=%s" % filename
