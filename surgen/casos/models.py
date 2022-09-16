@@ -117,7 +117,8 @@ class Agresor(Persona):
         choices=Hijos.choices,
         default=Hijos.NC,
     )
-
+    class Meta:
+        verbose_name_plural = "Agresores"
 
 class Contacto(models.Model):
     # muy muy técnicamente, es una Persona con menos atributos
