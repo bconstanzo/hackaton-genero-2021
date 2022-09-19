@@ -3,6 +3,7 @@ import os
 import mimetypes
 from asyncio.windows_events import NULL
 from .models import Caso, Domicilio, Victima, Incidencia, Documento, Contacto, Nota
+from .models import Agresor, Caso, Domicilio, Victima, Incidencia, Documento, Contacto, Nota
 from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -56,6 +57,38 @@ def caso(request,id):
         "documentos" : documentos 
     }
     return render(request, "casos/caso.html", context=context)
+    if request.user.is_staff :
+        response = redirect('/')
+        return response
+    else:
+        caso = Caso.objects.get( id = id) # TODO aca seria solo el caso que pido el usuario
+        agresores = caso.agresor.all()
+        notas = Nota.objects.filter(caso = caso)
+        incidencias = Incidencia.objects.filter(caso = caso)
+        documentos = Documento.objects.filter(caso = caso) 
+        historial = []
+        for inc in incidencias :
+            historial.append({
+                'nombre': inc.nombre,
+                'fecha': inc.fecha,
+                'descripcion': inc.descripcion
+                }
+            )
+        for doc in documentos :
+            historial.append({
+                'nombre': doc,
+                'fecha': doc.fecha,
+                'descripcion': doc.descripcion
+                }
+            )
+        context = {
+            "caso": caso, 
+            "historial" : sorted(historial, key = lambda x: x['fecha']),
+            "notas" : notas,
+            "documentos" : documentos, 
+            "agresores": agresores
+        }
+        return render(request, "casos/caso.html", context=context)
 
 @login_required
 def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy solo mostrando los TXT
