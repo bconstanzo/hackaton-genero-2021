@@ -19,12 +19,10 @@
             <li class="list-group-item">
                 <div class='container-side-by-side'>
                     <div class="row">
-                    <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento}}</a></div>
-                    <div class="col-sm">
-                        <div class="col-sm text-lg-end">
-                            <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-primary"><i class="fa fa-download"></i></button> </a>
+                        <div class="col-sm">
+                            <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-secondary"><i class="fa fa-download"></i></button> </a>
                         </div>
-                    </div>
+                        <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento}}</a></div>
                     </div>
                 </div>
             </li>
@@ -62,6 +60,17 @@
                             <img src= "{{doc_actual.archivo.url}}" width="650" >
                         </div>
                         </div>
+                    {% elif doc_actual.mimetype ==  "application/pdf" %}
+                    <div class="card mb-4">
+                        <div class = "card-body" >
+                            <div class="col text-center">
+                                <h3>{{doc_actual}}</h3>
+                            </div>
+                            <iframe src="http://127.0.0.1:8000/media/media/Mis_notas.pdf" width="650"> </iframe>
+                            <a href= {{doc_actual.archivo.url}}  target="_blank" >Abrir</a>
+                        </div>
+                        </div>
+                    
                     {% else %}
                         <div class="card mb-4">
                         <div class = "card-body" >
