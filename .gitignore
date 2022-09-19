@@ -131,3 +131,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+surgen/casos/migrations/0001_initial.py
