@@ -107,16 +107,7 @@ class Victima(Persona):
 
 
 class Agresor(Persona):
-    relacion = models.CharField(
-        max_length=30,
-        choices=Relaciones.choices,
-        default=Relaciones.OTRO,
-    )
-    hijos_en_comun = models.CharField(
-        max_length=30,
-        choices=Hijos.choices,
-        default=Hijos.NC,
-    )
+    
     class Meta:
         verbose_name_plural = "Agresores"
 
@@ -139,6 +130,16 @@ class Caso(models.Model):
         max_length=7,
         choices=Estados.choices,
         default=Estados.ABIERTO,
+    )
+    relacion = models.CharField(
+        max_length=30,
+        choices=Relaciones.choices,
+        default=Relaciones.OTRO,
+    )
+    hijos_en_comun = models.CharField(
+        max_length=30,
+        choices=Hijos.choices,
+        default=Hijos.NC,
     )
     def __str__(self):
         agresores = "; ".join( str(a) for a in self.agresor.all() )
