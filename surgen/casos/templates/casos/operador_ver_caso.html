@@ -1,0 +1,123 @@
+{% extends "casos/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="col text-center"><h1>SUR-Gen</h1></div>
+        </br>
+        <h2>Causa: {{caso}} </h2> 
+        </br>
+        <div class="col-sm text-lg-end">
+            <a href="{% url 'casos-operador_resultado' caso.victima.id%}"> <button type="button" class="btn btn-secondary">Volver</button> </a>
+        </div>
+        </br>
+        <!-- Agresor-->
+        <h4>Informacion de agresor</h4> 
+        <div class="col-md-8">
+            <br>
+            {%for agresor in agresores%}
+            <div class="card mb-4">
+                <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h4 class="mb-0"> {{agresor}}</h4>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Relacion con la victima</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{caso.relacion}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Hijos en comun</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{caso.hijos_en_comun}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">DNI</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{agresor.documento}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Domicilio</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{agresor.domicilio}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Fecha de nacimiento</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{agresor.fecha_nacimiento}}
+                    </div>
+                </div>
+                <hr>
+                </div>
+            </div> 
+            {%endfor%}
+        </div>
+        </br>
+        <h4>Historial</h4> 
+        <div class="col-md-8">
+            <!-- Historico-->
+            <div class="tab-pane fade show active" id="hist" role="tabpanel" aria-labelledby="hist-tab">
+                <br>
+                <ul class="timeline">
+                    {% for evento in incidencias %} 
+                        <li class="timeline-item mb-5">
+                            <h5>{{evento.nombre}}</h5>
+                            <p class="text-muted mb-2 fw-bold">{{evento.fecha}}</p>
+                            <p>{{evento.descripcion}}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <br>
+            </div>
+        </div>
+        </br>
+        <h4>Documentos</h4> 
+        <div class="col-sm-4">
+            <div class="list-group">
+                {% for documento in documentos %}
+                <li class="list-group-item">
+                    <div class='container-side-by-side'>
+                        <div class="row">
+                            <div class="col-sm">{{documento}}</div>
+                            <div class="col-sm">
+                                <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-secondary"><i class="fa fa-download"></i></button> </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}    
+            </div>
+        </div>
+        </br>
+        <h4>Descargar notas de la victima</h4> 
+        <!--Notas de la victima -->
+        <div class="col-md-8">
+            <div class="col-sm-12 text-lg">
+                <a href=" {% url 'casos-descargar_pdf_notas' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
+            </div>
+            <br>
+        </div>
+
+        <!--TODO Notas de operadores-->
+    </div>
+    
+{% endblock content %}        

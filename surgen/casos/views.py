@@ -2,6 +2,7 @@ from fileinput import filename
 import os
 import mimetypes
 from asyncio.windows_events import NULL
+from re import search
 from .models import Agresor, Caso, Domicilio, Victima, Incidencia, Documento, Contacto, Nota
 from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
 from django.shortcuts import render, redirect
@@ -33,7 +34,7 @@ def caso(request,id):
         response = redirect('/')
         return response
     else:
-        caso = Caso.objects.get( id = id) # TODO aca seria solo el caso que pido el usuario
+        caso = Caso.objects.get( id = id)
         agresores = caso.agresor.all()
         notas = Nota.objects.filter(caso = caso)
         incidencias = Incidencia.objects.filter(caso = caso)
@@ -63,7 +64,7 @@ def caso(request,id):
         return render(request, "casos/caso.html", context=context)
 
 @login_required
-def documentos(request,id_caso, id_doc):  #TODO Manejo de mimetypes aca estoy solo mostrando los TXT
+def documentos(request,id_caso, id_doc):  
     if request.user.is_staff :
         response = redirect('/')
         return response
@@ -216,3 +217,56 @@ def descargar_pdf_notas(request, id_caso):
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
+
+
+@login_required
+def operador_busqueda(request):
+    if request.user.is_staff :
+        if (request.method == 'POST'):
+            searched = request.POST['searched']
+            victimas = Victima.objects.filter( nombre__contains = searched)
+            #TODO AHORA ESTOY BUSCANDO SOLO POR NOMBRE SI ALGUIEN BUSCA NOMBRE Y APELLIDO NO APARECE!
+            print(victimas)
+            context = {
+                "victimas": victimas,
+            }
+            return render(request, "casos/operador_busqueda.html", context=context)
+        else:
+            return render(request, "casos/operador_busqueda.html", context={})
+    else:
+        response = redirect('/')
+        return response
+        
+@login_required
+def operador_resultado(request, id_victima):
+    if request.user.is_staff :
+        victima = Victima.objects.get(id = id_victima)
+        context = {
+            "victima": victima,
+            "casos": Caso.objects.filter(victima = victima),
+            "contactos": Contacto.objects.filter(victima = victima),
+        }
+        return render(request, "casos/operador_resultado.html", context=context)
+    else:
+        response = redirect('/')
+        return response
+
+@login_required
+def operador_ver_caso(request, id_caso):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        agresores = caso.agresor.all()
+        notas = Nota.objects.filter(caso = caso)
+        incidencias = Incidencia.objects.filter(caso = caso)
+        documentos = Documento.objects.filter(caso = caso) 
+        context = {
+            "caso": caso, 
+            "incidencias" : incidencias,
+            "notas" : notas,
+            "documentos" : documentos, 
+            "agresores": agresores
+        }
+        return render(request, "casos/operador_ver_caso.html", context=context)
+    else:
+        response = redirect('/')
+        return response
