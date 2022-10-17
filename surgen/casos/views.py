@@ -12,6 +12,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
+from django.db.models import Q
 
 # Create your views here.
 @login_required
@@ -224,9 +225,14 @@ def operador_busqueda(request):
     if request.user.is_staff :
         if (request.method == 'POST'):
             searched = request.POST['searched']
-            victimas = Victima.objects.filter( nombre__contains = searched)
-            #TODO AHORA ESTOY BUSCANDO SOLO POR NOMBRE SI ALGUIEN BUSCA NOMBRE Y APELLIDO NO APARECE!
-            print(victimas)
+            nombre_buscado = ' '
+            apellido_buscado = ' '
+            if ' ' in searched :
+                nombre_buscado, apellido_buscado = searched.split()
+            else:
+                nombre_buscado = searched
+                apellido_buscado = searched
+            victimas = Victima.objects.filter(Q(nombre__contains = nombre_buscado) | Q(apellido__contains = apellido_buscado))
             context = {
                 "victimas": victimas,
             }
