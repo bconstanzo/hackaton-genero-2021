@@ -14,6 +14,7 @@ from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 from django.db.models import Q
 
+
 # Create your views here.
 @login_required
 def perfil(request):
@@ -36,33 +37,38 @@ def caso(request,id):
         return response
     else:
         caso = Caso.objects.get( id = id)
-        agresores = caso.agresor.all()
-        notas = Nota.objects.filter(caso = caso)
-        incidencias = Incidencia.objects.filter(caso = caso)
-        documentos = Documento.objects.filter(caso = caso) 
-        historial = []
-        for inc in incidencias :
-            historial.append({
-                'nombre': inc.nombre,
-                'fecha': inc.fecha,
-                'descripcion': inc.descripcion
-                }
-            )
-        for doc in documentos :
-            historial.append({
-                'nombre': doc,
-                'fecha': doc.fecha,
-                'descripcion': doc.descripcion
-                }
-            )
-        context = {
-            "caso": caso, 
-            "historial" : sorted(historial, key = lambda x: x['fecha']),
-            "notas" : notas,
-            "documentos" : documentos, 
-            "agresores": agresores
-        }
-        return render(request, "casos/caso.html", context=context)
+        caso_usuario = caso.victima.usuario
+        if caso_usuario != request.user :
+            response = redirect('/')
+            return response
+        else:
+            agresores = caso.agresor.all()
+            notas = Nota.objects.filter(caso = caso)
+            incidencias = Incidencia.objects.filter(caso = caso)
+            documentos = Documento.objects.filter(caso = caso) 
+            historial = []
+            for inc in incidencias :
+                historial.append({
+                    'nombre': inc.nombre,
+                    'fecha': inc.fecha,
+                    'descripcion': inc.descripcion
+                    }
+                )
+            for doc in documentos :
+                historial.append({
+                    'nombre': doc,
+                    'fecha': doc.fecha,
+                    'descripcion': doc.descripcion
+                    }
+                )
+            context = {
+                "caso": caso, 
+                "historial" : sorted(historial, key = lambda x: x['fecha']),
+                "notas" : notas,
+                "documentos" : documentos, 
+                "agresores": agresores
+            }
+            return render(request, "casos/caso.html", context=context)
 
 @login_required
 def documentos(request,id_caso, id_doc):  
@@ -71,29 +77,34 @@ def documentos(request,id_caso, id_doc):
         return response
     else:
         caso = Caso.objects.get( id = id_caso)
-        documentos = Documento.objects.filter(caso = caso) 
-        file_content = ''
-        if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
-            doc_actual =  Documento.objects.get(id = id_doc)
-            filename = doc_actual.archivo.name
-            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            filepath = BASE_DIR +"/" + filename
-            if doc_actual.mimetype ==  "text/plain":
-                f = open(filepath, 'r')
-                file_content = f.read()
-                f.close()
+        caso_usuario = caso.victima.usuario
+        if caso_usuario != request.user :
+            response = redirect('/')
+            return response
         else:
-            doc_actual = NULL,
+            documentos = Documento.objects.filter(caso = caso) 
             file_content = ''
+            if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
+                doc_actual =  Documento.objects.get(id = id_doc)
+                filename = doc_actual.archivo.name
+                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                filepath = BASE_DIR +"/" + filename
+                if doc_actual.mimetype ==  "text/plain":
+                    f = open(filepath, 'r')
+                    file_content = f.read()
+                    f.close()
+            else:
+                doc_actual = NULL,
+                file_content = ''
 
-        context = {
-            "caso": caso, 
-            "documentos" : documentos,
-            "doc_actual" : doc_actual,
-            'file_content': file_content,
-            'id_doc' :id_doc,
-        }
-        return render(request, "casos/documentos.html", context=context)
+            context = {
+                "caso": caso, 
+                "documentos" : documentos,
+                "doc_actual" : doc_actual,
+                'file_content': file_content,
+                'id_doc' :id_doc,
+            }
+            return render(request, "casos/documentos.html", context=context)
 
 def home(request): 
     if request.user.is_authenticated and (not request.user.is_staff): 
@@ -151,16 +162,21 @@ def agregar_nota(request, id):
         return response
     else:
         caso = Caso.objects.get(id = id)
-        nota = Nota(caso = caso, fecha ='', descripcion='')
-        form_nota = NotaForm(request.POST or None, request.FILES or None, instance=nota)
-        context = {
-            "form_nota" : form_nota,
-        }
-        if form_nota.is_valid():
-            form_nota.save()
-            response = redirect('/perfil/caso/'+id)
+        caso_usuario = caso.victima.usuario
+        if caso_usuario != request.user :
+            response = redirect('/')
             return response
-        return render(request, "casos/agregar_nota.html", context = context)
+        else:
+            nota = Nota(caso = caso, fecha ='', descripcion='')
+            form_nota = NotaForm(request.POST or None, request.FILES or None, instance=nota)
+            context = {
+                "form_nota" : form_nota,
+            }
+            if form_nota.is_valid():
+                form_nota.save()
+                response = redirect('/perfil/caso/'+id)
+                return response
+            return render(request, "casos/agregar_nota.html", context = context)
 
 @login_required
 def editar_contacto(request,id_contacto):
@@ -203,20 +219,25 @@ def descargar_pdf_notas(request, id_caso):
         response = redirect('/')
     else:
         caso =  Caso.objects.get(id = id_caso)
-        notas = Nota.objects.filter(caso = caso)
-        template_path = 'casos/descargar_pdf_notas.html'
-        template = get_template(template_path)
-        context = {
-            'notas': notas,
-            'caso' : caso
-        }
-        html = template.render(context)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename= "Mis_notas.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
-        pisa_status = pisa.CreatePDF(
-        html, dest=response)
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        caso_usuario = caso.victima.usuario
+        if caso_usuario != request.user :
+            response = redirect('/')
+            
+        else:
+            notas = Nota.objects.filter(caso = caso)
+            template_path = 'casos/descargar_pdf_notas.html'
+            template = get_template(template_path)
+            context = {
+                'notas': notas,
+                'caso' : caso
+            }
+            html = template.render(context)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename= "Mis_notas.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
+            pisa_status = pisa.CreatePDF(
+            html, dest=response)
+            if pisa_status.err:
+                return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
 
 
