@@ -1,6 +1,6 @@
 from pydoc import Doc
 from django.contrib import admin
-from .models import Caso, Contacto, Domicilio, Victima, Agresor, Incidencia, Documento, Nota
+from .models import Caso, Contacto, Domicilio, Victima, Agresor, Incidencia, Documento, Concurrencia
 
 admin.site.site_header = 'Administrador Surgen'
 
@@ -15,4 +15,4 @@ admin.site.register(Victima)
 admin.site.register(Agresor)
 admin.site.register(Incidencia)
 admin.site.register(Documento, DocumentoAdmin)
-admin.site.register(Nota)
+admin.site.register(Concurrencia)

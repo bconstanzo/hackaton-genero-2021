@@ -11,9 +11,6 @@
         <button class="nav-link active" id="hist-tab" data-bs-toggle="tab" data-bs-target="#hist" type="button" role="tab" aria-controls="hist" aria-selected="true">Historico</button>
         </li>
         <li class="nav-item" role="presentation">
-        <button class="nav-link" id="notas-tab" data-bs-toggle="tab" data-bs-target="#notas" type="button" role="tab" aria-controls="incidencias" aria-selected="false">Mis Notas</button>
-        </li>
-        <li class="nav-item" role="presentation">
         <button class="nav-link" id="recursos-tab" data-bs-toggle="tab" data-bs-target="#recursos" type="button" role="tab" aria-controls="recursos" aria-selected="false">Recursos</button>
         </li>
         <li class="nav-item" role="presentation">
@@ -36,32 +33,6 @@
             <br>
             <div class="col-sm-12 text-lg-end">
                 <a href="{% url 'casos-documentos' caso.id -1%}"> <button type="button" class="btn btn-primary">Ver Documentos</button> </a>
-            </div>
-            <br>
-        </div>
-        <!-- Mis notas-->
-        <div class="tab-pane fade" id="notas" role="tabpanel" aria-labelledby="notas-tab">
-            <br>
-            <ul>
-                {% for nota in notas %}
-                    <div class="card mb-4">
-                        <div class = "card-body">
-                            <h5>{{nota.fecha}}</h5>   
-                            <div class="row-sm-9">
-                                {{nota.descripcion}}
-                            </div>  
-                            <div>{{nota.fecha_post}}</div>  
-                        </div>           
-                    </div>
-                {% endfor %}
-            </ul>
-            <br>
-            <div class="col-sm-12 text-lg-end">
-                <a href="{% url 'casos-agregar_nota' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Agregar</button> </a>
-            </div>
-            <br>  
-            <div class="col-sm-12 text-lg">
-                <a href=" {% url 'casos-descargar_pdf_notas' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
             </div>
             <br>
         </div>

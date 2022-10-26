@@ -1,10 +1,11 @@
 from fileinput import filename
 import os
 import mimetypes
+import datetime
 from asyncio.windows_events import NULL
 from re import search
-from .models import Agresor, Caso, Domicilio, Victima, Incidencia, Documento, Contacto, Nota
-from .forms import DomicilioForm, PerfilForm, ContactoForm, NotaForm
+from .models import Caso, Concurrencia, Domicilio, Victima, Incidencia, Documento, Contacto
+from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -43,7 +44,6 @@ def caso(request,id):
             return response
         else:
             agresores = caso.agresor.all()
-            notas = Nota.objects.filter(caso = caso)
             incidencias = Incidencia.objects.filter(caso = caso)
             documentos = Documento.objects.filter(caso = caso) 
             historial = []
@@ -64,7 +64,6 @@ def caso(request,id):
             context = {
                 "caso": caso, 
                 "historial" : sorted(historial, key = lambda x: x['fecha']),
-                "notas" : notas,
                 "documentos" : documentos, 
                 "agresores": agresores
             }
@@ -156,29 +155,6 @@ def agregar_contacto(request):
         return render(request, "casos/agregar_contacto.html", context = context)
 
 @login_required
-def agregar_nota(request, id):
-    if request.user.is_staff :
-        response = redirect('/')
-        return response
-    else:
-        caso = Caso.objects.get(id = id)
-        caso_usuario = caso.victima.usuario
-        if caso_usuario != request.user :
-            response = redirect('/')
-            return response
-        else:
-            nota = Nota(caso = caso, fecha ='', descripcion='')
-            form_nota = NotaForm(request.POST or None, request.FILES or None, instance=nota)
-            context = {
-                "form_nota" : form_nota,
-            }
-            if form_nota.is_valid():
-                form_nota.save()
-                response = redirect('/perfil/caso/'+id)
-                return response
-            return render(request, "casos/agregar_nota.html", context = context)
-
-@login_required
 def editar_contacto(request,id_contacto):
     if request.user.is_staff :
         response = redirect('/')
@@ -214,30 +190,26 @@ def descargar(request, id_doc):
             return response
 
 @login_required
-def descargar_pdf_notas(request, id_caso):
+def descargar_pdf_concurrencias(request, id_caso):
     if request.user.is_staff :
-        response = redirect('/')
-    else:
         caso =  Caso.objects.get(id = id_caso)
-        caso_usuario = caso.victima.usuario
-        if caso_usuario != request.user :
-            response = redirect('/')
-            
-        else:
-            notas = Nota.objects.filter(caso = caso)
-            template_path = 'casos/descargar_pdf_notas.html'
-            template = get_template(template_path)
-            context = {
-                'notas': notas,
-                'caso' : caso
-            }
-            html = template.render(context)
-            response = HttpResponse(content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename= "Mis_notas.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
-            pisa_status = pisa.CreatePDF(
-            html, dest=response)
-            if pisa_status.err:
-                return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        concurrencias = Concurrencia.objects.filter(caso = caso)
+        template_path = 'casos/descargar_pdf_concurrencias.html'
+        template = get_template(template_path)
+        context = {
+            'concurrencias': concurrencias,
+            'caso' : caso
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename= "Concurrencias.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
+        pisa_status = pisa.CreatePDF(
+        html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    else:
+         response = redirect('/')
+
     return response
 
 
@@ -283,17 +255,36 @@ def operador_ver_caso(request, id_caso):
     if request.user.is_staff :
         caso = Caso.objects.get(id = id_caso)
         agresores = caso.agresor.all()
-        notas = Nota.objects.filter(caso = caso)
+        concurrencias = Concurrencia.objects.filter(caso = caso)
         incidencias = Incidencia.objects.filter(caso = caso)
         documentos = Documento.objects.filter(caso = caso) 
         context = {
             "caso": caso, 
             "incidencias" : incidencias,
-            "notas" : notas,
+            "concurrencias" : concurrencias,
             "documentos" : documentos, 
             "agresores": agresores
         }
         return render(request, "casos/operador_ver_caso.html", context=context)
+    else:
+        response = redirect('/')
+        return response
+
+@login_required
+def operador_concurrencia(request, id_caso):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        concurrencia = Concurrencia(caso = caso, lugar_concurrido ='', descripcion='')
+        form_concurrencia = ConcurrenciaForm(request.POST or None, request.FILES or None, instance=concurrencia)
+        context = {
+            "caso": caso,
+            "form_concurrencia" : form_concurrencia,
+        }
+        if form_concurrencia.is_valid():
+            form_concurrencia.save()
+            response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+            return response
+        return render(request, "casos/operador_concurrencia.html", context = context)
     else:
         response = redirect('/')
         return response

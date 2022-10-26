@@ -108,16 +108,32 @@
             </div>
         </div>
         </br>
-        <h4>Descargar notas de la victima</h4> 
-        <!--Notas de la victima -->
+        <h4>Concurrencias</h4> 
+        <ul>
+            {% for concurrencia in concurrencias %}
+                <div class="card mb-4">
+                    <div class = "card-body">
+                        <h5>{{concurrencia.fecha}}</h5>   
+                        <div class="row-sm-9">
+                            {{concurrencia.lugar_concurrido}}
+                        </div>  
+                        <div>{{concurrencia.descripcion}}</div>  
+                    </div>           
+                </div>
+            {% endfor %}
+        </ul>
+        <br>
+        <div class="col-sm-12 text-lg-end">
+            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Agregar</button> </a>
+        </div>
+        <br>  
+        </br> 
         <div class="col-md-8">
             <div class="col-sm-12 text-lg">
-                <a href=" {% url 'casos-descargar_pdf_notas' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
+                <a href=" {% url 'casos-descargar_pdf_concurrencias' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
             </div>
             <br>
         </div>
-
-        <!--TODO Notas de operadores-->
     </div>
     
 {% endblock content %}        

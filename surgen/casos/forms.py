@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Domicilio, Nota, Victima, Provincias
+from .models import Concurrencia, Domicilio, Victima, Provincias
 from .models import Contacto
 
 
@@ -61,21 +61,16 @@ class DateInput(forms.DateInput):
 	input_type = 'date'
 	date_effet = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'), label='Date effet')
 
-class NotaForm(ModelForm):
+
+class ConcurrenciaForm(ModelForm):
 	class Meta:
-		model = Nota
-		fields = ('fecha', 'descripcion')
+		model = Concurrencia
+		fields = ('lugar_concurrido', 'descripcion')
 		labels = {
-			'fecha': '',
+			'lugar_concurrido': '',
 			'descripcion': '',	
 		}
 		widgets = {
-			'fecha': forms.DateInput(
-				format=('%Y-%m-%d'),
-				attrs={'class': 'form-control', 
-				'placeholder': 'Fecha',
-				'type': 'date'
-				}),
+			'lugar_concurrido': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Lugar concurrido'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nota'}),
 		}
-

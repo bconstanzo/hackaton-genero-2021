@@ -9,14 +9,14 @@
         </style>
     </head>
     <body>
-        <h1>Notas de la causa: {{caso}}</h1>
-        {% for nota in notas %}
+        <h1>Concurrencias registradas referentes a la causa: {{caso}}</h1>
+        {% for concurrencia in concurrencias %}
             <div class="card mb-4">
                 <div class = "card-body">
                     <div class="row-sm-9">
-                        <b>{{nota.fecha}}:</b> {{nota.descripcion}}
+                        <b>{{concurrencia.lugar_concurrido}}:</b> {{concurrencia.descripcion}}
                     </div>  
-                    <div>Publicado: {{nota.fecha_post}}</div>  
+                    <div>Publicado: {{concurrencia.fecha}}</div>  
                 </div>           
             </div>
             <br>

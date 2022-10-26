@@ -174,10 +174,10 @@ def doc_mimetype(sender, created, instance , update_fields=["mimetype"], **kwarg
 post_save.connect(doc_mimetype, sender=Documento)
 
 
-class Nota(models.Model):
+class Concurrencia(models.Model):
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE)
-    fecha = models.DateField(null=True) 
-    fecha_post = models.DateTimeField(blank=True, default=datetime.now) 
-    descripcion = models.TextField()
+    fecha = models.DateTimeField(blank=True, default=datetime.now) 
+    lugar_concurrido = models.TextField(verbose_name='Institucion concurrida')
+    descripcion = models.TextField(blank=True, verbose_name= 'notas de operador')
     def __str__(self):
-        return self.descripcion
+        return f" Concurrencia a {self.lugar_concurrido}"
