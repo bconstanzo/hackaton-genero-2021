@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'casos.apps.CasosConfig',
     'usuarios.apps.UsuariosConfig',
     'crispy_forms',
+    'simple_history',
     # instaladas por default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -64,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # agregadas por nosotros:
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'surgen.urls'
@@ -146,3 +149,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'casos-home'
 
 LOGIN_URL = 'login'
+
+SIMPLE_HISTORY_REVERT_DISABLED=True

@@ -1,3 +1,4 @@
+from email.policy import default
 import magic
 import os
 from django.db import models
@@ -5,6 +6,7 @@ from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import User
 from datetime import datetime  
 from django.db.models.signals import pre_save, post_save
+from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
@@ -74,18 +76,21 @@ class Domicilio(models.Model):
         choices=Provincias.choices,
         default=Provincias.SIN_ESPECIIFAR,
     )
-
-    # algunas ideas:
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True)
+    history = HistoricalRecords()
+        # algunas ideas:
     # tipo de domicilio: residencia activa, legal, otro?
     # fecha_inicio, fecha_fin?  -- para el caso de ManyToMany
-
     def __str__(self):
         return (
             f"{self.calle} {self.altura}{f' ({self.piso_depto}) ' if self.piso_depto else ''}"
             f", {self.localidad}"
         )
 
+def get_domicilio_user(instance, **kwargs):
+        return instance.changed_by
 
+        
 class Persona(models.Model):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
@@ -101,9 +106,13 @@ class Persona(models.Model):
     def __str__(self):
         return f"{self.apellido}, {self.nombre}"
 
-
 class Victima(Persona):
     usuario = models.ForeignKey(User, null= True, on_delete=models.CASCADE)
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
+
+def get_victima_user(instance, **kwargs):
+        return instance.changed_by
 
 
 class Agresor(Persona):
@@ -117,8 +126,13 @@ class Contacto(models.Model):
     nombre = models.CharField(max_length=50)
     telefono = models.CharField(max_length=24)
     email = models.CharField(max_length=50, null=True)
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
     def __str__(self):
         return self.nombre
+    
+def get_contacto_user(instance, **kwargs):
+        return instance.changed_by
 
 
 #Un caso es una causa penal
