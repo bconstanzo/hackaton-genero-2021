@@ -9,6 +9,47 @@
             <a href="{% url 'casos-operador_resultado' caso.victima.id%}"> <button type="button" class="btn btn-secondary">Volver</button> </a>
         </div>
         </br>
+        <h4>Concurrencias</h4> 
+        </br>
+        <div class="col-sm-12 ">
+            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-primary">Registrar Concurrencia</button> </a>
+        </div>  
+        </br> 
+        <div class="accordion" id="accordionConcurrencias">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="concurrencias">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Ver concurrencias
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="concurrencias" data-bs-parent="#accordionConcurrencias" >
+                    <div class="accordion-body">
+                        {% for concurrencia in concurrencias %}
+                        <div class="card mb-4">
+                            <div class = "card-body">
+                                <h5>{{concurrencia.fecha}}</h5>   
+                                <div class="row-sm-9">
+                                    {{concurrencia.lugar_concurrido}}
+                                </div>  
+                                <div>{{concurrencia.descripcion}}</div>  
+                            </div>           
+                        </div>
+                        {% endfor %}
+                        <div class="col-sm-12 text-lg-end">
+                            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Registrar Concurrencia</button> </a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="col-sm-12 text-lg">
+                                <a href=" {% url 'casos-descargar_pdf_concurrencias' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </br> 
+        </br> 
         <!-- Agresor-->
         <h4>Informacion de agresor</h4> 
         <div class="col-md-8">
@@ -108,32 +149,7 @@
             </div>
         </div>
         </br>
-        <h4>Concurrencias</h4> 
-        <ul>
-            {% for concurrencia in concurrencias %}
-                <div class="card mb-4">
-                    <div class = "card-body">
-                        <h5>{{concurrencia.fecha}}</h5>   
-                        <div class="row-sm-9">
-                            {{concurrencia.lugar_concurrido}}
-                        </div>  
-                        <div>{{concurrencia.descripcion}}</div>  
-                    </div>           
-                </div>
-            {% endfor %}
-        </ul>
-        <br>
-        <div class="col-sm-12 text-lg-end">
-            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Agregar</button> </a>
-        </div>
-        <br>  
-        </br> 
-        <div class="col-md-8">
-            <div class="col-sm-12 text-lg">
-                <a href=" {% url 'casos-descargar_pdf_concurrencias' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
-            </div>
-            <br>
-        </div>
-    </div>
+
+        
     
 {% endblock content %}        
