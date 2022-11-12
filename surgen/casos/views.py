@@ -176,6 +176,15 @@ def editar_contacto(request,id_contacto):
 def descargar(request, id_doc):
     if request.user.is_staff :
         response = redirect('/')
+    doc =  Documento.objects.get(id = id_doc)
+    filename = doc.archivo.name
+    if filename != '':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        filepath = BASE_DIR +"/" + filename
+        path = open(filepath, 'rb')
+        mime_type, _ = mimetypes.guess_type(filepath)
+        response = HttpResponse(path, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
         return response
     else:
         doc =  Documento.objects.get(id = id_doc)
