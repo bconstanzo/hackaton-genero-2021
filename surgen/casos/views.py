@@ -137,6 +137,29 @@ def editar_perfil(request):
         return render(request, "casos/editar_perfil.html", context = context)
 
 @login_required
+def operador_editar_agresor(request, id_caso):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        victima = caso.victima
+        domicilio = Domicilio.objects.get(victima = victima)
+        form_agresor = AgresorForm(request.POST or None, request.FILES or None, instance=caso)
+        form_domicilio = DomicilioForm(request.POST or None, request.FILES or None, instance=domicilio)
+        context = {
+            "form_agresor" : form_agresor,
+            "form_domicilio" : form_domicilio,
+        }
+        if form_agresor.is_valid() and form_domicilio.is_valid():
+            form_agresor.save()
+            form_domicilio.save()
+            response = redirect('/perfil')
+            return response
+        return render(request, "casos/operador_editar_agresor.html", context = context)
+    else:
+        response = redirect('/')
+        return response
+    
+
+@login_required
 def agregar_contacto(request):
     if request.user.is_staff :
         response = redirect('/')

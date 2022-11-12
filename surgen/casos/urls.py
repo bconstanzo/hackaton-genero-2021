@@ -15,6 +15,7 @@ urlpatterns = [
     path("operador_busqueda/", views.operador_busqueda, name="casos-operador_busqueda"),
     path("operador_resultado/<id_victima>", views.operador_resultado, name="casos-operador_resultado"),
     path("operador_resultado/operador_ver_caso/<id_caso>", views.operador_ver_caso, name="casos-operador_ver_caso"),
+    path("operador_editar_agresor/<id_caso>", views.operador_editar_agresor, name="casos-operador_editar_agresor"),
     path("operador_concurrencia/<id_caso>", views.operador_concurrencia, name="casos-operador_concurrencia"),
     path("agregar_incidencia/<id_caso>", views.agregar_incidencia, name="casos-agregar_incidencia"),
     path("descargar_concurrencias/<id_caso>", views.descargar_pdf_concurrencias, name="casos-descargar_pdf_concurrencias"),

@@ -1,0 +1,21 @@
+{% extends "casos/base.html" %}
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h1>Editar Agresor:</h1>
+        <br/>
+        <form action="" method=POST enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form_agresor.as_p }}
+            <br/>
+            <h5>Cambiar domicilio:</h5>
+            <br/>
+            {{ form_domicilio.as_p }}
+        <br/>
+        <input type="submit" value="Update" class="btn btn-secondary">
+    {% else %}
+        <h1>Sorry! You Must Be Logged In To View This Page...</h1>
+        <a href="{% url 'login' %}">Login Here</a>
+    {% endif %}
+
+{% endblock content %} 

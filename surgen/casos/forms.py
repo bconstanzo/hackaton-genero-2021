@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Concurrencia, Domicilio, Victima, Provincias
-from .models import Contacto
+from .models import Concurrencia, Domicilio, Victima, Provincias, Caso, Documento, Contacto, Incidencia
 
 
 class PerfilForm(ModelForm):
@@ -88,3 +87,41 @@ class IncidenciaForm(ModelForm):
 			'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
 		}
+
+
+class AgresorForm(ModelForm): #En realidad son dos datos del caso que refieren al agresor
+	class Meta:
+		HIJOS_CHOICES =(
+		("NC","NC"),
+		("SI","SI"),
+		("NO","NO"),
+		)
+		RELACIONES_CHOICES = (
+			("FAMILIAR", "FAMILIAR"),
+			("PAREJA", "PAREJA"),
+			("EX_PAREJA", "EX_PAREJA"),
+			("FAMILIAR_PAREJA", "FAMILIAR_PAREJA"),
+			("FAMILIAR_EX_PAREJA", "FAMILIAR_EX_PAREJA"),
+			("JEFE", "JEFE"),
+			("VECINO", "VECINO"),
+			("PROFESOR", "PROFESOR"),
+			("PROPIETARIO", "PROPIETARIO"),
+			("COMPAÑERO", "COMPAÑERO"),
+			("AMIGO", "AMIGO"),
+			("OTRO", "OTRO"),
+		)
+		model = Caso
+		fields = ('relacion', 'hijos_en_comun') #+domicilio.
+		labels = {
+			'relacion': '',
+			'hijos_en_comun': '',	
+		}
+		widgets = {
+			'relacion': forms.Select(choices = RELACIONES_CHOICES ,attrs={'class':'form-control', 'placeholder':'Relacion'}),
+			'hijos_en_comun': forms.Select(attrs={'class':'form-control', 'choices' : HIJOS_CHOICES, 'placeholder':'Hijos en Común'}),
+		}
+
+    
+    
+
+
