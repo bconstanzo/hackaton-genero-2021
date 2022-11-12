@@ -74,3 +74,17 @@ class ConcurrenciaForm(ModelForm):
 			'lugar_concurrido': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Lugar concurrido'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nota'}),
 		}
+class IncidenciaForm(ModelForm):
+	class Meta:
+		model = Incidencia
+		fields = ('fecha', 'nombre', 'descripcion')
+		labels = {
+			'fecha': '',
+			'nombre': '',	
+			'descripcion': '',
+		}
+		widgets = {
+			'fecha': forms.DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
+			'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}),
+			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
+		}

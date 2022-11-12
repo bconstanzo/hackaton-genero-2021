@@ -11,15 +11,12 @@
         </br>
         <h4>Concurrencias</h4> 
         </br>
-        <div class="col-sm-12 ">
-            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-primary">Registrar Concurrencia</button> </a>
-        </div>  
-        </br> 
+        
         <div class="accordion" id="accordionConcurrencias">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="concurrencias">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Ver concurrencias
+                    Historial de concurrencias
                     </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="concurrencias" data-bs-parent="#accordionConcurrencias" >
@@ -35,9 +32,6 @@
                             </div>           
                         </div>
                         {% endfor %}
-                        <div class="col-sm-12 text-lg-end">
-                            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-outline-secondary">Registrar Concurrencia</button> </a>
-                        </div>
                         <div class="col-md-8">
                             <div class="col-sm-12 text-lg">
                                 <a href=" {% url 'casos-descargar_pdf_concurrencias' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
@@ -49,6 +43,10 @@
             </div>
         </div>
         </br> 
+        <div class="col-sm-12 ">
+            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-primary">Registrar Concurrencia</button> </a>
+        </div>  
+        </br> 
         </br> 
         <!-- Agresor-->
         <h4>Informacion de agresor</h4> 
@@ -58,8 +56,11 @@
             <div class="card mb-4">
                 <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm">
                     <h4 class="mb-0"> {{agresor}}</h4>
+                    </div>
+                    <div class="col-sm">
+                    <a href=" {% url 'casos-operador_editar_agresor' caso.id%}"> <button type="button" class="btn btn-outline-secondary pull-right" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> </a>
                     </div>
                 </div>
                 <hr>
@@ -127,9 +128,12 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <br>
+            </div>
+            <div class="col-sm-12 ">
+                <a href=" {% url 'casos-agregar_incidencia' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
             </div>
         </div>
+        </br>
         </br>
         <h4>Documentos</h4> 
         <div class="col-sm-4">
@@ -149,7 +153,9 @@
             </div>
         </div>
         </br>
-
-        
-    
+        <div class="col-sm-12 ">
+            <a href="{% url 'casos-agregar_documento' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
+        </div> 
+        </br>
+        </br>
 {% endblock content %}        

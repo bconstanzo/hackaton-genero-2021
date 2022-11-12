@@ -5,7 +5,7 @@ import datetime
 from asyncio.windows_events import NULL
 from re import search
 from .models import Caso, Concurrencia, Domicilio, Victima, Incidencia, Documento, Contacto
-from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm
+from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm, AgresorForm, IncidenciaForm, DocumentoForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -174,8 +174,6 @@ def editar_contacto(request,id_contacto):
 
 @login_required
 def descargar(request, id_doc):
-    if request.user.is_staff :
-        response = redirect('/')
     doc =  Documento.objects.get(id = id_doc)
     filename = doc.archivo.name
     if filename != '':
@@ -186,17 +184,6 @@ def descargar(request, id_doc):
         response = HttpResponse(path, content_type=mime_type)
         response['Content-Disposition'] = "attachment; filename=%s" % filename
         return response
-    else:
-        doc =  Documento.objects.get(id = id_doc)
-        filename = doc.archivo.name
-        if filename != '':
-            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            filepath = BASE_DIR +"/" + filename
-            path = open(filepath, 'rb')
-            mime_type, _ = mimetypes.guess_type(filepath)
-            response = HttpResponse(path, content_type=mime_type)
-            response['Content-Disposition'] = "attachment; filename=%s" % filename
-            return response
 
 @login_required
 def descargar_pdf_concurrencias(request, id_caso):
@@ -294,6 +281,29 @@ def operador_concurrencia(request, id_caso):
             response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
             return response
         return render(request, "casos/operador_concurrencia.html", context = context)
+    else:
+        response = redirect('/')
+        return response
+
+@login_required
+def agregar_incidencia(request, id_caso):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        incidencia = Incidencia(caso = caso, fecha ='', descripcion='', nombre='')
+        form_incidencia = IncidenciaForm(request.POST or None, request.FILES or None, instance=incidencia)
+        context = {
+            "caso": caso,
+            "form_incidencia" : form_incidencia,
+        }
+        if form_incidencia.is_valid():
+            form_incidencia.save()
+            response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+            return response
+        return render(request, "casos/agregar_incidencia.html", context = context)
+    else:
+        response = redirect('/')
+        return response
+
     else:
         response = redirect('/')
         return response
