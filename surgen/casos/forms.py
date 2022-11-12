@@ -73,6 +73,34 @@ class ConcurrenciaForm(ModelForm):
 			'lugar_concurrido': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Lugar concurrido'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nota'}),
 		}
+
+
+class DocumentoForm(ModelForm):
+
+	def __init__(self, *args, **kwargs):
+		caso = kwargs.pop('caso', False)
+		incidencias = Incidencia.objects.filter(caso = caso)
+		super(DocumentoForm, self).__init__(*args, **kwargs)
+		self.fields['incidencia'] = forms.ModelChoiceField(
+                required=False,
+                queryset=Incidencia.objects.filter(caso = caso),
+                widget=forms.Select(choices = incidencias))
+	
+	class Meta:
+		model = Documento
+		fields = ('fecha', 'descripcion', 'archivo')
+		labels = {
+			'fecha': '',
+			'descripcion': '',
+			'archivo': '',	
+		}
+		widgets = {
+			'fecha': forms.DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
+			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
+			'archivo': forms.ClearableFileInput(attrs={'class':'form-control', 'placeholder':'Archivo'}),
+		}
+
+
 class IncidenciaForm(ModelForm):
 	class Meta:
 		model = Incidencia

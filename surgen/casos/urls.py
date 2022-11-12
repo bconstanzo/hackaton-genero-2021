@@ -18,5 +18,6 @@ urlpatterns = [
     path("operador_editar_agresor/<id_caso>", views.operador_editar_agresor, name="casos-operador_editar_agresor"),
     path("operador_concurrencia/<id_caso>", views.operador_concurrencia, name="casos-operador_concurrencia"),
     path("agregar_incidencia/<id_caso>", views.agregar_incidencia, name="casos-agregar_incidencia"),
+    path("agregar_documento/<id_caso>", views.agregar_documento, name="casos-agregar_documento"),
     path("descargar_concurrencias/<id_caso>", views.descargar_pdf_concurrencias, name="casos-descargar_pdf_concurrencias"),
 ]

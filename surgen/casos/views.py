@@ -328,6 +328,21 @@ def agregar_incidencia(request, id_caso):
         response = redirect('/')
         return response
 
+@login_required
+def agregar_documento(request,id_caso):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        documento = Documento(caso = caso, archivo ='', descripcion='', fecha ='', mimetype='')
+        form_documento = DocumentoForm(request.POST or None, request.FILES or None, instance=documento, caso=caso)
+        context = {
+            "caso": caso,
+            "form_documento" : form_documento,
+        }
+        if form_documento.is_valid():
+            form_documento.save()
+            response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+            return response
+        return render(request, "casos/agregar_documento.html", context = context)
     else:
         response = redirect('/')
         return response
