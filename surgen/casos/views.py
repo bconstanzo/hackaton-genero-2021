@@ -245,6 +245,7 @@ def operador_busqueda(request):
                 nombre_buscado = searched
                 apellido_buscado = searched
             victimas = Victima.objects.filter(Q(nombre__contains = nombre_buscado) | Q(apellido__contains = apellido_buscado))
+            victimas = Victima.objects.filter(Q(nombre__contains = nombre_buscado) | Q(apellido__contains = apellido_buscado) | Q(documento__contains = searched))
             context = {
                 "victimas": victimas,
             }
