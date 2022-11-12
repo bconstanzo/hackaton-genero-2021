@@ -1,6 +1,7 @@
 # algunas cosas para ignorar:
 surgen_env/
 surgen/casos/migrations/
+surgen/media/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
