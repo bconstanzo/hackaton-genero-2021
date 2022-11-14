@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Concurrencia, Domicilio, Victima, Provincias, Caso, Documento, Contacto, Incidencia
+from .models import Concurrencia, Domicilio, Victima, Provincias, Caso, Documento, Contacto, Incidencia, Agresor
 
 
 class PerfilForm(ModelForm):
@@ -24,11 +24,11 @@ class DomicilioForm(ModelForm):
 		model = Domicilio
 		fields = ('calle', 'altura', 'piso_depto', 'codigo_postal', 'localidad', 'provincia')
 		labels = {
-			'calle' :'',
-			'altura':'', 
-			'piso_depto':'', 
-			'codigo_postal':'',
-			'localidad':'',
+			'calle' :'Calle',
+			'altura':'Altura', 
+			'piso_depto':'Piso', 
+			'codigo_postal':'Codigo Postal',
+			'localidad':'Localidad',
 			'provincia':'',
 		}
 		widgets = {
@@ -117,7 +117,7 @@ class IncidenciaForm(ModelForm):
 		}
 
 
-class AgresorForm(ModelForm): #En realidad son dos datos del caso que refieren al agresor
+class AgresorCasoForm(ModelForm): #En realidad son dos datos del caso que refieren al agresor
 	class Meta:
 		HIJOS_CHOICES =(
 		("NC","NC"),
@@ -139,16 +139,28 @@ class AgresorForm(ModelForm): #En realidad son dos datos del caso que refieren a
 			("OTRO", "OTRO"),
 		)
 		model = Caso
-		fields = ('relacion', 'hijos_en_comun') #+domicilio.
+		fields = ('relacion', 'hijos_en_comun')
 		labels = {
-			'relacion': '',
-			'hijos_en_comun': '',	
+			'relacion': 'Relacion',
+			'hijos_en_comun': 'Hijos en comun',	
 		}
 		widgets = {
 			'relacion': forms.Select(choices = RELACIONES_CHOICES ,attrs={'class':'form-control', 'placeholder':'Relacion'}),
 			'hijos_en_comun': forms.Select(attrs={'class':'form-control', 'choices' : HIJOS_CHOICES, 'placeholder':'Hijos en Común'}),
 		}
 
+class AgresorForm(ModelForm): #En realidad son dos datos del caso que refieren al agresor
+	class Meta:
+		model = Agresor
+		fields = ('telefono','email')
+		labels = {	
+			'telefono': 'Telefono',
+			'email': 'Correo electronico',
+		}
+		widgets = {
+			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
+			'email': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Mail'}),
+		}
     
     
 

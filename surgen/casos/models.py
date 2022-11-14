@@ -149,11 +149,13 @@ class Caso(models.Model):
         max_length=30,
         choices=Relaciones.choices,
         default=Relaciones.OTRO,
+        verbose_name="Relacion",
     )
     hijos_en_comun = models.CharField(
         max_length=30,
         choices=Hijos.choices,
         default=Hijos.NC,
+        verbose_name="Hijos en comun",
     )
     def __str__(self):
         agresores = "; ".join( str(a) for a in self.agresor.all() )

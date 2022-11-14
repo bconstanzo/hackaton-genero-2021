@@ -4,8 +4,8 @@ import mimetypes
 import datetime
 from asyncio.windows_events import NULL
 from re import search
-from .models import Caso, Concurrencia, Domicilio, Victima, Incidencia, Documento, Contacto
-from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm, AgresorForm, IncidenciaForm, DocumentoForm
+from .models import Caso, Concurrencia, Domicilio, Victima, Incidencia, Documento, Contacto, Agresor
+from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm, AgresorForm, IncidenciaForm, DocumentoForm, AgresorCasoForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -137,18 +137,21 @@ def editar_perfil(request):
         return render(request, "casos/editar_perfil.html", context = context)
 
 @login_required
-def operador_editar_agresor(request, id_caso):
+def operador_editar_agresor(request, id_caso, id_agresor):
     if request.user.is_staff :
         caso = Caso.objects.get(id = id_caso)
         victima = caso.victima
+        agresor = Agresor.objects.get(id = id_caso)
         domicilio = Domicilio.objects.get(victima = victima)
-        form_agresor = AgresorForm(request.POST or None, request.FILES or None, instance=caso)
+        form_agresor = AgresorCasoForm(request.POST or None, request.FILES or None, instance=caso)
         form_domicilio = DomicilioForm(request.POST or None, request.FILES or None, instance=domicilio)
+        form_agresor_caso = AgresorForm(request.POST or None, request.FILES or None, instance=agresor)
         context = {
             "form_agresor" : form_agresor,
+            "form_agresor_caso" : form_agresor_caso,
             "form_domicilio" : form_domicilio,
         }
-        if form_agresor.is_valid() and form_domicilio.is_valid():
+        if form_agresor.is_valid() and form_domicilio.is_valid() and form_agresor_caso.is_valid():
             form_agresor.save()
             form_domicilio.save()
             response = redirect('/perfil')

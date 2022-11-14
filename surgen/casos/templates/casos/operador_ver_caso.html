@@ -60,7 +60,7 @@
                     <h4 class="mb-0"> {{agresor}}</h4>
                     </div>
                     <div class="col-sm">
-                    <a href=" {% url 'casos-operador_editar_agresor' caso.id%}"> <button type="button" class="btn btn-outline-secondary pull-right" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> </a>
+                    <a href=" {% url 'casos-operador_editar_agresor' caso.id agresor.id %}"> <button type="button" class="btn btn-outline-secondary pull-right" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> </a>
                     </div>
                 </div>
                 <hr>
@@ -106,6 +106,24 @@
                     </div>
                     <div class="col-sm-9 text-secondary">
                     {{agresor.fecha_nacimiento}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Fecha de nacimiento</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{agresor.telefono}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <h6 class="mb-0">Fecha de nacimiento</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                    {{agresor.email}}
                     </div>
                 </div>
                 <hr>
