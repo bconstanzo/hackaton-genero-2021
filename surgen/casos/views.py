@@ -14,7 +14,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 from django.db.models import Q
-
+from django.contrib import messages
 
 # Create your views here.
 @login_required
@@ -135,32 +135,6 @@ def editar_perfil(request):
             response = redirect('/perfil')
             return response
         return render(request, "casos/editar_perfil.html", context = context)
-
-@login_required
-def operador_editar_agresor(request, id_caso, id_agresor):
-    if request.user.is_staff :
-        caso = Caso.objects.get(id = id_caso)
-        victima = caso.victima
-        agresor = Agresor.objects.get(id = id_caso)
-        domicilio = Domicilio.objects.get(victima = victima)
-        form_agresor = AgresorCasoForm(request.POST or None, request.FILES or None, instance=caso)
-        form_domicilio = DomicilioForm(request.POST or None, request.FILES or None, instance=domicilio)
-        form_agresor_caso = AgresorForm(request.POST or None, request.FILES or None, instance=agresor)
-        context = {
-            "form_agresor" : form_agresor,
-            "form_agresor_caso" : form_agresor_caso,
-            "form_domicilio" : form_domicilio,
-        }
-        if form_agresor.is_valid() and form_domicilio.is_valid() and form_agresor_caso.is_valid():
-            form_agresor.save()
-            form_domicilio.save()
-            response = redirect('/perfil')
-            return response
-        return render(request, "casos/operador_editar_agresor.html", context = context)
-    else:
-        response = redirect('/')
-        return response
-    
 
 @login_required
 def agregar_contacto(request):
@@ -296,17 +270,25 @@ def operador_ver_caso(request, id_caso):
 def operador_concurrencia(request, id_caso):
     if request.user.is_staff :
         caso = Caso.objects.get(id = id_caso)
-        concurrencia = Concurrencia(caso = caso, lugar_concurrido ='', descripcion='')
-        form_concurrencia = ConcurrenciaForm(request.POST or None, request.FILES or None, instance=concurrencia)
-        context = {
-            "caso": caso,
-            "form_concurrencia" : form_concurrencia,
-        }
-        if form_concurrencia.is_valid():
-            form_concurrencia.save()
+        if caso.estado == "ABIERTO":
+            concurrencia = Concurrencia(caso = caso, lugar_concurrido ='', descripcion='')
+            form_concurrencia = ConcurrenciaForm(request.POST or None, request.FILES or None, instance=concurrencia)
+            context = {
+                "caso": caso,
+                "form_concurrencia" : form_concurrencia,
+            }
+            if form_concurrencia.is_valid():
+                form_concurrencia.save()
+                response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+                return response
+            return render(request, "casos/operador_concurrencia.html", context = context)
+        else:
+            context = {
+                "caso": caso,
+            }
+            messages.info(request, 'La causa que intentas actualizar esta cerrada')
             response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
             return response
-        return render(request, "casos/operador_concurrencia.html", context = context)
     else:
         response = redirect('/')
         return response
@@ -315,17 +297,26 @@ def operador_concurrencia(request, id_caso):
 def agregar_incidencia(request, id_caso):
     if request.user.is_staff :
         caso = Caso.objects.get(id = id_caso)
-        incidencia = Incidencia(caso = caso, fecha ='', descripcion='', nombre='')
-        form_incidencia = IncidenciaForm(request.POST or None, request.FILES or None, instance=incidencia)
-        context = {
-            "caso": caso,
-            "form_incidencia" : form_incidencia,
-        }
-        if form_incidencia.is_valid():
-            form_incidencia.save()
+        if caso.estado == "ABIERTO":
+            incidencia = Incidencia(caso = caso, fecha ='', descripcion='', nombre='')
+            form_incidencia = IncidenciaForm(request.POST or None, request.FILES or None, instance=incidencia)
+            context = {
+                "caso": caso,
+                "form_incidencia" : form_incidencia,
+            }
+            if form_incidencia.is_valid():
+                form_incidencia.save()
+                response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+                return response
+            return render(request, "casos/agregar_incidencia.html", context = context)
+        else:
+            context = {
+                "caso": caso,
+            }
+            messages.info(request, 'La causa que intentas actualizar esta cerrada')
             response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
             return response
-        return render(request, "casos/agregar_incidencia.html", context = context)
+
     else:
         response = redirect('/')
         return response
@@ -334,17 +325,51 @@ def agregar_incidencia(request, id_caso):
 def agregar_documento(request,id_caso):
     if request.user.is_staff :
         caso = Caso.objects.get(id = id_caso)
-        documento = Documento(caso = caso, archivo ='', descripcion='', fecha ='', mimetype='')
-        form_documento = DocumentoForm(request.POST or None, request.FILES or None, instance=documento, caso=caso)
-        context = {
-            "caso": caso,
-            "form_documento" : form_documento,
-        }
-        if form_documento.is_valid():
-            form_documento.save()
+        if caso.estado == "ABIERTO":
+            documento = Documento(caso = caso, archivo ='', descripcion='', fecha ='', mimetype='')
+            form_documento = DocumentoForm(request.POST or None, request.FILES or None, instance=documento, caso=caso)
+            context = {
+                "caso": caso,
+                "form_documento" : form_documento,
+            }
+            if form_documento.is_valid():
+                form_documento.save()
+                response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
+                return response
+            return render(request, "casos/agregar_documento.html", context = context)
+        else:
+            context = {
+                "caso": caso,
+            }
+            messages.info(request, 'La causa que intentas actualizar esta cerrada')
             response = redirect('/operador_resultado/operador_ver_caso/'+id_caso)
             return response
-        return render(request, "casos/agregar_documento.html", context = context)
     else:
         response = redirect('/')
         return response
+
+@login_required
+def operador_editar_agresor(request, id_caso, id_agresor):
+    if request.user.is_staff :
+        caso = Caso.objects.get(id = id_caso)
+        victima = caso.victima
+        agresor = Agresor.objects.get(id = id_caso)
+        domicilio = Domicilio.objects.get(victima = victima)
+        form_agresor = AgresorCasoForm(request.POST or None, request.FILES or None, instance=caso)
+        form_domicilio = DomicilioForm(request.POST or None, request.FILES or None, instance=domicilio)
+        form_agresor_caso = AgresorForm(request.POST or None, request.FILES or None, instance=agresor)
+        context = {
+            "form_agresor" : form_agresor,
+            "form_agresor_caso" : form_agresor_caso,
+            "form_domicilio" : form_domicilio,
+        }
+        if form_agresor.is_valid() and form_domicilio.is_valid() and form_agresor_caso.is_valid():
+            form_agresor.save()
+            form_domicilio.save()
+            response = redirect('/perfil')
+            return response
+        return render(request, "casos/operador_editar_agresor.html", context = context)
+    else:
+        response = redirect('/')
+        return response
+    

@@ -5,6 +5,16 @@
         </br>
         <h2>Causa: {{caso}} </h2> 
         </br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary" role="alert">
+                    <h6 class="alert-heading"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  Error</h6>
+                    
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="col-sm text-lg-end">
             <a href="{% url 'casos-operador_resultado' caso.victima.id%}"> <button type="button" class="btn btn-secondary">Volver</button> </a>
         </div>
@@ -43,10 +53,17 @@
             </div>
         </div>
         </br> 
-        <div class="col-sm-12 ">
-            <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-primary">Registrar Concurrencia</button> </a>
-        </div>  
-        </br> 
+        {% if caso.estado == "ABIERTO"%}
+            <div class="col-sm-12 ">
+                <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-primary">Registrar Concurrencia</button> </a>
+            </div>  
+            </br> 
+        {%else%}
+            <div class="col-sm-12 ">
+                <a href="{% url 'casos-operador_concurrencia' caso.id%}"> <button type="button" class="btn btn-outline-secondary disabled">Registrar Concurrencia</button> </a>
+            </div>  
+            </br> 
+        {% endif %}
         </br> 
         <!-- Agresor-->
         <h4>Informacion de agresor</h4> 
@@ -147,9 +164,15 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="col-sm-12 ">
-                <a href=" {% url 'casos-agregar_incidencia' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
-            </div>
+            {% if caso.estado == "ABIERTO"%}
+                <div class="col-sm-12 ">
+                    <a href=" {% url 'casos-agregar_incidencia' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
+                </div>
+            {%else%}
+                <div class="col-sm-12 ">
+                    <a href=" {% url 'casos-agregar_incidencia' caso.id %}"> <button type="button" class="btn btn-outline-secondary disabled">Agregar</button> </a>
+                </div>
+            {%endif%}
         </div>
         </br>
         </br>
@@ -171,9 +194,16 @@
             </div>
         </div>
         </br>
-        <div class="col-sm-12 ">
-            <a href="{% url 'casos-agregar_documento' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
-        </div> 
-        </br>
+        {% if caso.estado == "ABIERTO"%}
+            <div class="col-sm-12 ">
+                <a href="{% url 'casos-agregar_documento' caso.id %}"> <button type="button" class="btn btn-primary">Agregar</button> </a>
+            </div> 
+            </br>
+        {%else%}
+            <div class="col-sm-12 ">
+                <a href="{% url 'casos-agregar_documento' caso.id %}"> <button type="button" class="btn btn-outline-secondary disabled">Agregar</button> </a>
+            </div> 
+            </br>
+        {%endif%}
         </br>
 {% endblock content %}        
