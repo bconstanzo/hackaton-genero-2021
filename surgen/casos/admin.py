@@ -2,7 +2,7 @@ from pydoc import Doc
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from .models import Caso, Contacto, Domicilio, Victima, Agresor, Incidencia, Persona, Documento, Concurrencia
-from .models import get_contacto_user, get_domicilio_user, get_victima_user
+from .models import get_contacto_user, get_domicilio_user, get_history_user
 
 admin.site.site_header = 'Administrador Surgen'
 
@@ -18,8 +18,8 @@ class CasoAdmin(admin.ModelAdmin):
         return f"{obj.victima}, agredida por {agresores}"
 
 
-class DocumentoAdmin(admin.ModelAdmin):
-    exclude = ('mimetype', )
+class DocumentoAdmin(SimpleHistoryAdmin):
+    exclude = ('mimetype', 'changed_by')
     # segun que atributos quiero ordenar: ordering = ['']
     list_display = ['view_archivo', 'fecha', 'descripcion']
     search_fields = ['caso__victima__nombre','caso__victima__apellido'] #busqueda de related search
@@ -28,7 +28,8 @@ class DocumentoAdmin(admin.ModelAdmin):
     def view_archivo(self, obj):
         return f"{obj.archivo.name}"
 
-class IncidenciaAdmin(admin.ModelAdmin):
+class IncidenciaAdmin(SimpleHistoryAdmin):
+    exclude = ('changed_by', )
     list_display = ['nombre', 'fecha', 'view_caso']
     search_fields = ['caso__victima__nombre','caso__victima__apellido'] #busqueda de related search
     
@@ -61,6 +62,11 @@ class VictimaHistoryAdmin(SimpleHistoryAdmin):
     list_display = ["view_nombre", "email", "telefono"]
     history_list_display = ["email", "telefono"]
     search_fields = ['nombre','apellido']
+class AgresorHistoryAdmin(SimpleHistoryAdmin):
+    exclude = ('changed_by', )
+    list_display = ["view_nombre","documento", "email", "telefono"]
+    history_list_display = ["documento", "email", "telefono"]
+    search_fields = ['documento','nombre','apellido']
 
     @admin.display(empty_value='???')
     def view_nombre(self, obj):
@@ -72,7 +78,8 @@ class ContactoHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["email", "telefono"]
     search_fields = ['victima__nombre','victima__apellido'] #busqueda de related search
 
-class ConcurrenciaAdmin(admin.ModelAdmin):
+class ConcurrenciaAdmin(SimpleHistoryAdmin):
+    exclude = ('changed_by', )
     list_display = ["caso", "fecha", 'lugar_concurrido']
     # si no quiero que se pueda editar en la misma lista saco list_editable = ["estado"]
     list_filter = ['fecha','caso']
@@ -83,8 +90,8 @@ class ConcurrenciaAdmin(admin.ModelAdmin):
 admin.site.register(Caso,CasoAdmin)
 admin.site.register(Contacto, ContactoHistoryAdmin, get_user=get_contacto_user)
 admin.site.register(Domicilio, DomicilioHistoryAdmin, get_user=get_domicilio_user)
-admin.site.register(Victima, VictimaHistoryAdmin, get_user=get_victima_user)
-admin.site.register(Agresor)
-admin.site.register(Incidencia, IncidenciaAdmin)
-admin.site.register(Documento, DocumentoAdmin)
-admin.site.register(Concurrencia,ConcurrenciaAdmin)
+admin.site.register(Victima, VictimaHistoryAdmin, get_user=get_history_user)
+admin.site.register(Agresor, AgresorHistoryAdmin, get_user=get_history_user)
+admin.site.register(Incidencia, IncidenciaAdmin, get_user=get_history_user)
+admin.site.register(Documento, DocumentoAdmin, get_user=get_history_user)
+admin.site.register(Concurrencia,ConcurrenciaAdmin, get_user=get_history_user)

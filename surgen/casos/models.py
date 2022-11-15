@@ -111,7 +111,7 @@ class Victima(Persona):
     changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
 
-def get_victima_user(instance, **kwargs):
+def get_history_user(instance, **kwargs):
         return instance.changed_by
 
 
@@ -119,6 +119,8 @@ class Agresor(Persona):
     
     class Meta:
         verbose_name_plural = "Agresores"
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
 
 class Contacto(models.Model):
     # muy muy técnicamente, es una Persona con menos atributos
@@ -168,6 +170,9 @@ class Incidencia(models.Model):
     fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
     descripcion = models.TextField()
     nombre = models.TextField() # ver si se deberia incluir o no
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
+
     def __str__(self):
         return self.nombre
 
@@ -179,6 +184,8 @@ class Documento(models.Model):
     descripcion = models.TextField()
     archivo = models.FileField(upload_to="media")
     mimetype = models.CharField(max_length=256, blank=True, null=True) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
     def __str__(self):
         return os.path.basename(self.archivo.name)
     
@@ -195,5 +202,7 @@ class Concurrencia(models.Model):
     fecha = models.DateTimeField(blank=True, default=datetime.now) 
     lugar_concurrido = models.TextField(verbose_name='Institucion concurrida')
     descripcion = models.TextField(blank=True, verbose_name= 'notas de operador')
+    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    history = HistoricalRecords()
     def __str__(self):
         return f" Concurrencia a {self.lugar_concurrido}"
