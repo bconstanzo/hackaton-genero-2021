@@ -149,7 +149,7 @@ class AgresorCasoForm(ModelForm): #En realidad son dos datos del caso que refier
 			'hijos_en_comun': forms.Select(attrs={'class':'form-control', 'choices' : HIJOS_CHOICES, 'placeholder':'Hijos en Común'}),
 		}
 
-class AgresorForm(ModelForm): #En realidad son dos datos del caso que refieren al agresor
+class AgresorForm(ModelForm):
 	class Meta:
 		model = Agresor
 		fields = ('telefono','email')
