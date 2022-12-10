@@ -97,6 +97,14 @@
 
                             </div>           
                         </div>
-                    </div>
-                {% endfor %}
+                    </div>   
+        {% empty %}
+        <div class="alert alert-primary" role="alert">
+            No hay causas registradas asociadas a este perfil. Para crear una nueva causa acceda al 
+            <a href= "/admin"  target="_blank" >sitio de administracion.</a>
+            
+            <br>
+        </div>
+        <br>
+        {% endfor %}
 {% endblock content %}
