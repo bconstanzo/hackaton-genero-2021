@@ -41,13 +41,20 @@
                                 <div>{{concurrencia.descripcion}}</div>  
                             </div>           
                         </div>
+                        {% empty %}
+                        <div class="alert alert-secondary" role="alert">
+                            No hay concurrencias registradas asociadas a este caso.
+                        </div>
+                        <br>
                         {% endfor %}
+                        {% if concurrencias %}
                         <div class="col-md-8">
                             <div class="col-sm-12 text-lg">
                                 <a href=" {% url 'casos-descargar_pdf_concurrencias' caso.id%}"> <button type="button" class="btn btn-primary">Descargar</button> </a>
                             </div>
                             <br>
                         </div>
+                        {%endif%}
                     </div>
                 </div>
             </div>
