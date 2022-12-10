@@ -130,6 +130,8 @@ class Contacto(models.Model):
 
 #Un caso es una causa penal
 class Caso(models.Model):
+    class Meta:
+        verbose_name = "Causa"
     victima = models.ForeignKey(Victima, on_delete=models.SET_NULL, null=True)
     agresor = models.ManyToManyField(Agresor)
     fecha = models.DateTimeField()

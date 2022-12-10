@@ -8,7 +8,7 @@ from django.db.models import Q
 admin.site.site_header = 'Administrador Surgen'
 
 class CasoAdmin(admin.ModelAdmin):
-    list_display = ["view_caso", "estado"]
+    list_display = ["ver_causa", "estado"]
     list_editable = ["estado"]
     # si no quiero que se pueda editar en la misma lista saco list_editable = ["estado"]
     list_filter = ['estado']
@@ -16,7 +16,7 @@ class CasoAdmin(admin.ModelAdmin):
     # readonly_fields = ['fecha']
 
     @admin.display(empty_value='???')
-    def view_caso(self, obj):
+    def ver_causa(self, obj):
         agresores = "; ".join( str(a) for a in obj.agresor.all() )
         return f"{obj.victima}, agredida por {agresores}"
 
