@@ -84,7 +84,8 @@ class DocumentoForm(ModelForm):
 		self.fields['incidencia'] = forms.ModelChoiceField(
                 required=False,
                 queryset=Incidencia.objects.filter(caso = caso),
-                widget=forms.Select(choices = incidencias))
+                widget=forms.Select(choices = incidencias), 
+				label='Tramite judicial')
 	
 	class Meta:
 		model = Documento
