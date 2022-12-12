@@ -41,8 +41,8 @@ class Provincias(models.TextChoices):
 
 
 class Estados(models.TextChoices):
-    ABIERTO            = "ABIERTO", gettext_lazy("Abierto")
-    CERRADO            = "CERRADO", gettext_lazy("Cerrado")
+    ABIERTO            = "ABIERTO", ("En tramite")
+    CERRADO            = "CERRADO", ("Archivado")
 
 class Hijos(models.TextChoices):
     NC            = "NC", gettext_lazy("No corresponde")
