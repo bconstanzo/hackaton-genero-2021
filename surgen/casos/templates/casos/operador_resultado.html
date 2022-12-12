@@ -89,7 +89,7 @@
                                     fecha : {{ caso.fecha }}
                                 </div>
                                 <div class="row-sm-9">
-                                    Estado : {{ caso.estado }}
+                                    Estado : {{ caso.get_estado_display }}
                                 </div>    
                                 <div class="col-sm-12">
                                     <a class="btn btn-dark" href="{% url 'casos-operador_ver_caso' caso.id %}" role="button">Ver</a>
