@@ -22,7 +22,11 @@
                         <div class="col-sm">
                             <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-secondary"><i class="fa fa-download"></i></button> </a>
                         </div>
-                        <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento}}</a></div>
+                        {% if documento.mimetype ==  "application/pdf" %}
+                            <div class="col-sm"><a href= {{documento.archivo.url}}  target="_blank" class="list-group-item">{{documento}}</a></div>
+                        {%else%}
+                            <div class="col-sm"><a href="{% url 'casos-documentos' caso.id documento.id%}" class="list-group-item">{{documento}}</a></div>
+                        {%endif%}
                     </div>
                 </div>
             </li>
