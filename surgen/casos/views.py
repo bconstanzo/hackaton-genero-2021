@@ -61,11 +61,13 @@ def caso(request,id):
                     'descripcion': doc.descripcion
                     }
                 )
+            concurrencias = Concurrencia.objects.filter(caso = caso)
             context = {
                 "caso": caso, 
                 "historial" : sorted(historial, key = lambda x: x['fecha']),
                 "documentos" : documentos, 
-                "agresores": agresores
+                "agresores": agresores,
+                "concurrencias": concurrencias,
             }
             return render(request, "casos/caso.html", context=context)
 
