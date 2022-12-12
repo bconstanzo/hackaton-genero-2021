@@ -8,7 +8,7 @@
             {% csrf_token %}
             {{ form_contacto.as_p }}
         <br/>
-        <input type="submit" value="Update" class="btn btn-secondary">
+        <input type="submit" value="Aceptar" class="btn btn-secondary">
     {% else %}
         <h1>Sorry! You Must Be Logged In To View This Page...</h1>
         <a href="{% url 'login' %}">Login Here</a>
