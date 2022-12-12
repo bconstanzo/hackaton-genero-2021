@@ -12,7 +12,7 @@ class CasoAdmin(admin.ModelAdmin):
     list_editable = ["estado"]
     # si no quiero que se pueda editar en la misma lista saco list_editable = ["estado"]
     list_filter = ['estado']
-    raw_id_fields = ['agresor','victima']
+    autocomplete_fields = ['agresor','victima']
     # readonly_fields = ['fecha']
 
     @admin.display(empty_value='???')
