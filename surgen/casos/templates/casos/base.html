@@ -32,18 +32,18 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{% url 'casos-home' %}">Home</a>
+                  <a class="nav-item nav-link" href="{% url 'casos-home' %}">Inicio</a>
                   <a class="nav-item nav-link" href="{% url 'casos-about' %}">Acerca de</a>
                 </div>
                   <!-- Navbar Right Side -->
                 <div class="navbar-nav mr-auto">
                   {% if user.is_authenticated and not user.is_staff%}
                     <a class="nav-item nav-link" href="{% url 'casos-perfil' %}">Perfil</a>
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
                   {% elif user.is_authenticated and user.is_staff%}
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
                   {% else %}
-                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Iniciar sesión</a>
                   {% endif %}
                 </div>
               </div>
