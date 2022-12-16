@@ -10,10 +10,10 @@ admin.site.site_header = 'Administrador Surgen'
 class CasoAdmin(admin.ModelAdmin):
     list_display = ["ver_causa", "estado"]
     list_editable = ["estado"]
+    search_fields = ['victima__nombre','victima__apellido'] #busqueda de related search
     # si no quiero que se pueda editar en la misma lista saco list_editable = ["estado"]
     list_filter = ['estado']
     autocomplete_fields = ['agresor','victima']
-    # readonly_fields = ['fecha']
 
     @admin.display(empty_value='???')
     def ver_causa(self, obj):
