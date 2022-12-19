@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from simple_history.admin import SimpleHistoryAdmin
 from .models import Caso, Contacto, Domicilio, Victima, Agresor, Incidencia, Documento, Concurrencia
 from .models import get_history_user
+from .forms import registro_form
 from django.db.models import Q
+from django.contrib.auth.admin import UserAdmin
 
 admin.site.site_header = 'Administrador Surgen'
 
@@ -129,6 +131,18 @@ class ConcurrenciaAdmin(SimpleHistoryAdmin):
     list_filter = ['fecha','caso']
     search_fields = ['caso__victima__nombre','caso__victima__apellido'] #busqueda de related search
 
+class UserAdmin(admin.ModelAdmin):
+    
+    list_display = ('username','email','is_staff')
+    list_filter = ('is_staff', 'is_superuser')
+
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            kwargs['form'] = registro_form
+
+        return super(UserAdmin, self).get_form(request,obj=obj,**kwargs)
+
+
 
 # Register your models here.
 admin.site.register(Caso,CasoAdmin)
@@ -139,3 +153,7 @@ admin.site.register(Agresor, AgresorHistoryAdmin, get_user=get_history_user)
 admin.site.register(Incidencia, IncidenciaAdmin, get_user=get_history_user)
 admin.site.register(Documento, DocumentoAdmin, get_user=get_history_user)
 admin.site.register(Concurrencia,ConcurrenciaAdmin, get_user=get_history_user)
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+
+
