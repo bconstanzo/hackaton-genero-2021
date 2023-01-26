@@ -6,7 +6,11 @@
         <div class="col-md-6">
             <!--perfil-->
             <h2>{{victima.nombre}} {{victima.apellido}}</h2>
+            <br>
             <h4>DNI: {{victima.documento}} </h4>
+            <br>
+            <br>
+            <h4>Datos: </h4>
             <div class="col-md-8">
                 <div class="card mb-4">
                   <div class="card-body">
@@ -101,7 +105,13 @@
                   </div>
                   <hr>
                 </div>
-              {% endfor %}
+              {% empty %}
+              <br>
+              <div class="alert alert-secondary" role="alert">
+                No hay causas registradas asociadas a este perfil.
+              </div>
+            <br>
+            {% endfor %}
             </ul>
         </div>
     </div>
