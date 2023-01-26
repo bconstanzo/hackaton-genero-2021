@@ -3,10 +3,11 @@ import magic
 import os
 from django.db import models
 from django.utils.translation import gettext_lazy
-from django.contrib.auth.models import User
 from datetime import datetime  
 from django.db.models.signals import pre_save, post_save
 from simple_history.models import HistoricalRecords
+from django.contrib.auth.models import  BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import Group
 
 # Create your models here.
 
@@ -65,6 +66,81 @@ class Relaciones(models.TextChoices):
 
 
 
+class MyUserManager(BaseUserManager):
+    def create_user(self, username, email, password=None):
+        if not username:
+            raise ValueError('Los usuarios deben tener un nombre de usuario')
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model( 
+            username = username, 
+            email = email,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, password):
+        """
+        Creates and saves a superuser
+        """
+        user = self.create_user(
+            username = username,
+            email=email,
+            password=password 
+        )
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+
+class MyUser(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(
+        verbose_name='Usuario', 
+        max_length=125,
+        unique=True,
+    )
+    email = models.EmailField(
+        verbose_name='Email',
+        max_length=255,
+        #unique=True,
+    )
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    date_of_birth = models.DateField(blank = True, null= True)
+
+    objects = MyUserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.username
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        permissions = self.get_group_permissions()
+        if perm in permissions:
+            return True
+        else:
+            if self.is_superuser:
+                return True
+            else:
+                return False
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+    
+    
+    
+
 class Domicilio(models.Model):
     calle = models.CharField(max_length=100)
     altura = models.IntegerField()
@@ -76,7 +152,7 @@ class Domicilio(models.Model):
         choices=Provincias.choices,
         default=Provincias.SIN_ESPECIIFAR,
     )
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True)
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True)
     history = HistoricalRecords()
  
     def __str__(self):
@@ -102,8 +178,8 @@ class Persona(models.Model):
         return f"{self.apellido}, {self.nombre}"
 
 class Victima(Persona):
-    usuario = models.OneToOneField(User, null= True, on_delete=models.CASCADE)
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    usuario = models.OneToOneField(MyUser, null= True, on_delete=models.CASCADE)
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
 
 def get_history_user(instance, **kwargs):
@@ -113,7 +189,7 @@ def get_history_user(instance, **kwargs):
 class Agresor(Persona):
     class Meta:
         verbose_name_plural = "Agresores"
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
 
 class Contacto(models.Model):
@@ -122,7 +198,7 @@ class Contacto(models.Model):
     nombre = models.CharField(max_length=50)
     telefono = models.CharField(max_length=24)
     email = models.CharField(max_length=50, null=True)
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
     def __str__(self):
         return self.nombre
@@ -163,7 +239,7 @@ class Incidencia(models.Model):
     fecha = models.DateTimeField(null=False)  # fecha denuncia/aviso/registro?
     descripcion = models.TextField()
     nombre = models.TextField() # ver si se deberia incluir o no
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
 
     def __str__(self):
@@ -177,7 +253,7 @@ class Documento(models.Model):
     descripcion = models.TextField()
     archivo = models.FileField(upload_to="media")
     mimetype = models.CharField(max_length=256, blank=True, null=True) #https://stackoverflow.com/questions/643690/maximum-mimetype-length-when-storing-type-in-db
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
     def __str__(self):
         return os.path.basename(self.archivo.name)
@@ -195,7 +271,9 @@ class Concurrencia(models.Model):
     fecha = models.DateTimeField(blank=True, default=datetime.now) 
     lugar_concurrido = models.TextField(verbose_name='Institucion concurrida')
     descripcion = models.TextField(blank=True, verbose_name= 'notas de operador')
-    changed_by = models.ForeignKey('auth.User', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
+    changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
     def __str__(self):
         return f" Concurrencia a {self.lugar_concurrido}"
+
+
