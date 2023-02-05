@@ -67,28 +67,24 @@ class Relaciones(models.TextChoices):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self, username, password=None):
         if not username:
             raise ValueError('Los usuarios deben tener un nombre de usuario')
-        if not email:
-            raise ValueError('Users must have an email address')
 
         user = self.model( 
             username = username, 
-            email = email,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
+    def create_superuser(self, username, password):
         """
         Creates and saves a superuser
         """
         user = self.create_user(
             username = username,
-            email=email,
             password=password 
         )
         user.is_superuser = True
@@ -103,11 +99,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         max_length=125,
         unique=True,
     )
-    email = models.EmailField(
-        verbose_name='Email',
-        max_length=255,
-        #unique=True,
-    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -116,7 +107,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
 
     def __str__(self):              # __unicode__ on Python 2
         return self.username
