@@ -10,5 +10,9 @@
         {{ form_incidencia.as_p }}
     <br/>
     <input type="submit" value="Aceptar" class="btn btn-secondary">
+    <div class="col-sm text-lg-end">
+        <a href="{% url 'casos-operador_ver_caso' id-caso %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
+    </div>
+    </br>
 
 {% endblock content %}

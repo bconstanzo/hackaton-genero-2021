@@ -16,6 +16,10 @@
         <br/>
         <input type="submit" value="Aceptar" class="btn btn-secondary">
         <br/>
+        <div class="col-sm text-lg-end">
+            <a href="{% url 'casos-perfil' %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
+        </div>
+        </br>
     {% else %}
         <h1>Sorry! You Must Be Logged In To View This Page...</h1>
         <a href="{% url 'login' %}">Login Here</a>
