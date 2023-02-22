@@ -2,24 +2,42 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError  
-from django.forms import EmailField  
-from django.contrib.auth.models import User  
-from django.forms.forms import Form  
+from django.core.validators import validate_email 
+from django.contrib.auth.models import User    
 from .models import Concurrencia, Domicilio, Victima, Provincias, Caso, Documento, Contacto, Incidencia, Agresor
 
 
+
 class PerfilForm(ModelForm):
+	email = forms.EmailField(),
+	telefono = forms.CharField(widget=forms.NumberInput),
 	class Meta:
 		model = Victima
 		fields = ('email', 'telefono')
 		labels = {
-			'email': '',
-			'telefono': '',	
+			'email': 'email',
+			'telefono': 'telefono',	
 		}
 		widgets = {
-			'email': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Mail'}),
-			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
 		}
+
+	def clean_email(self):
+		email = self.cleaned_data.get("email")
+		try:
+			validate_email(email)
+		except ValidationError as e:
+			valid = False
+		else:
+			valid = True
+		if not valid:
+			raise forms.ValidationError("Email invalido: ejemplo@mail.com")
+		return email
+
+	def clean_telefono(self):
+		telefono = self.cleaned_data.get("telefono")
+		if not telefono.isdigit():
+			raise forms.ValidationError("Telefono invalido, ingresar solo digitos numericos")
+		return telefono
 
 
 class DomicilioForm(ModelForm):
@@ -31,7 +49,7 @@ class DomicilioForm(ModelForm):
 		labels = {
 			'calle' :'Calle',
 			'altura':'Altura', 
-			'piso_depto':'Piso', 
+			'piso_depto':'Piso y Departamento', 
 			'codigo_postal':'Codigo Postal',
 			'localidad':'Localidad',
 			'provincia':'',
@@ -43,9 +61,26 @@ class DomicilioForm(ModelForm):
 			'codigo_postal': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Codigo postal'}),
 			'localidad': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Localidad'}),
 		}
+	def clean_piso_depto(self): #ver que pasa si lo deja vacio.
+		piso_depto = self.cleaned_data.get("piso_depto")
+		if piso_depto :
+			if ' ' in piso_depto:
+				piso, depto = piso_depto.split(' ')
+			else: 
+				piso = piso_depto
+			if not piso.isdigit():
+				raise forms.ValidationError("Numero invalido. Formato requerido: 1 A / 101")
+		return piso_depto
+	
+	def clean_codigo_postal(self): #ver que pasa si lo deja vacio.
+		codigo_postal = self.cleaned_data.get("codigo_postal")
+		if not codigo_postal.isdigit():
+			raise forms.ValidationError("Numero invalido.")
+		return codigo_postal
 
 
 class ContactoForm(ModelForm):
+	email = forms.EmailField(),
 	class Meta:
 		model = Contacto
 		fields = ('nombre', 'email', 'telefono')
@@ -57,9 +92,25 @@ class ContactoForm(ModelForm):
 		}
 		widgets = {
 			'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}),
-            'email': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Mail'}),
 			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
 		}
+	def clean_email(self):
+		email = self.cleaned_data.get("email")
+		try:
+			validate_email(email)
+		except ValidationError as e:
+			valid = False
+		else:
+			valid = True
+		if not valid:
+			raise forms.ValidationError("Email invalido: ejemplo@mail.com")
+		return email
+		
+	def clean_telefono(self):
+		telefono = self.cleaned_data.get("telefono")
+		if not telefono.isdigit():
+			raise forms.ValidationError("Telefono invalido, ingresar solo digitos numericos")
+		return telefono
 
 class DateInput(forms.DateInput):
 	input_type = 'date'
@@ -101,7 +152,7 @@ class DocumentoForm(ModelForm):
 			'archivo': '',	
 		}
 		widgets = {
-			'fecha': forms.DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
+			'fecha': DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
 			'archivo': forms.ClearableFileInput(attrs={'class':'form-control', 'placeholder':'Archivo'}),
 		}
@@ -117,7 +168,7 @@ class IncidenciaForm(ModelForm):
 			'descripcion': '',
 		}
 		widgets = {
-			'fecha': forms.DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
+			'fecha': DateInput(attrs={'class':'form-control', 'placeholder':'Fecha'}),
 			'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre'}),
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
 		}
@@ -156,6 +207,7 @@ class AgresorCasoForm(ModelForm): #En realidad son dos datos del caso que refier
 		}
 
 class AgresorForm(ModelForm):
+	email = forms.EmailField(),
 	class Meta:
 		model = Agresor
 		fields = ('telefono','email')
@@ -165,9 +217,25 @@ class AgresorForm(ModelForm):
 		}
 		widgets = {
 			'telefono': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Telefono'}),
-			'email': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Mail'}),
 		}
-    
+	
+	def clean_email(self):
+		email = self.cleaned_data.get("email")
+		try:
+			validate_email(email)
+		except ValidationError as e:
+			valid = False
+		else:
+			valid = True
+		if not valid:
+			raise forms.ValidationError("Email invalido: ejemplo@mail.com")
+		return email
+		
+	def clean_telefono(self):
+		telefono = self.cleaned_data.get("telefono")
+		if not telefono.isdigit():
+			raise forms.ValidationError("Telefono invalido, ingresar solo digitos numericos")
+		return telefono
     
 
 # forms.py
