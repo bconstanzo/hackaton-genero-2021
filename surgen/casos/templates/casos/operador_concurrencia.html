@@ -4,11 +4,7 @@
         <div class="col text-center"><h1>Operador SUR-Gen</h1></div>
         </br>
         <div class="col-sm text-lg-end">
-            <a href="{% url 'casos-operador_ver_caso' id-caso %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
-        </div>
-        </br>
-        <div class="col-sm text-lg-end">
-            <a href="{% url 'casos-operador_ver_caso' id-caso %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
+            <a href="{% url 'casos-operador_ver_caso' caso.id %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
         </div>
         </br>
         <h2>{{caso}}</h2>

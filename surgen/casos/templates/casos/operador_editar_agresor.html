@@ -3,7 +3,7 @@
 
     {% if user.is_authenticated %}
         <div class="col-sm text-lg-end">
-            <a href="{% url 'casos-operador_ver_caso' id-caso %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
+            <a href="{% url 'casos-operador_ver_caso' caso.id %}"> <button type="button" class="btn btn-secondary">Cancelar</button> </a>
         </div>
         </br>
         <h1>Editar Agresor:</h1>
