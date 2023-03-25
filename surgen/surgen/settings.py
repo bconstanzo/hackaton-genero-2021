@@ -35,8 +35,8 @@ SECRET_KEY = 'django-insecure-gc4m9da(1(bn*8+cs2=^d*4dx*@#^#lj4a2nq3d3kn7j9%ot7n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost']
+#ALLOWED_HOSTS = ['your_server_domain_or_IP', 'second_domain_or_IP', . . ., 'localhost']
 
 # Application definition
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'usuarios.apps.UsuariosConfig',
     'crispy_forms',
     'simple_history',
+    "crispy_bootstrap5",
     # instaladas por default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -93,16 +94,19 @@ WSGI_APPLICATION = 'surgen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'surgendb',
+        'USER': 'surgenuser',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,7 +130,7 @@ AUTH_USER_MODEL = 'casos.MyUser'
 
 LANGUAGE_CODE = 'es-es'
 
-TIME_ZONE = 'America/Argentina/Buenos_Aires'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -145,10 +149,15 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGIN_REDIRECT_URL = 'casos-home'
 
 LOGIN_URL = 'login'
 
 SIMPLE_HISTORY_REVERT_DISABLED=True
+
+DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
+
