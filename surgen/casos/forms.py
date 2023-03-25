@@ -1,9 +1,11 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import DateField, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError  
 from django.core.validators import validate_email 
-from django.contrib.auth.models import User    
+from django.contrib.auth.models import User
+
+from surgen import settings    
 from .models import Concurrencia, Domicilio, Victima, Provincias, Caso, Documento, Contacto, Incidencia, Agresor
 
 
@@ -85,9 +87,9 @@ class ContactoForm(ModelForm):
 		model = Contacto
 		fields = ('nombre', 'email', 'telefono')
 		labels = {
-			'nombre': '',
-            'email': '',
-			'telefono': '',
+			'nombre': 'Nombre',
+            'email': 'Email',
+			'telefono': 'Telefono',
 				
 		}
 		widgets = {
@@ -142,7 +144,7 @@ class DocumentoForm(ModelForm):
                 queryset=Incidencia.objects.filter(caso = caso),
                 widget=forms.Select(choices = incidencias), 
 				label='Tramite judicial')
-	
+	#fecha = DateField(input_formats=settings.DATE_INPUT_FORMATS)
 	class Meta:
 		model = Documento
 		fields = ('fecha', 'descripcion', 'archivo')
@@ -156,9 +158,12 @@ class DocumentoForm(ModelForm):
 			'descripcion': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descripcion'}),
 			'archivo': forms.ClearableFileInput(attrs={'class':'form-control', 'placeholder':'Archivo'}),
 		}
+	
+	
 
 
 class IncidenciaForm(ModelForm):
+	#fecha = DateField(input_formats=settings.DATE_INPUT_FORMATS)
 	class Meta:
 		model = Incidencia
 		fields = ('fecha', 'nombre', 'descripcion')

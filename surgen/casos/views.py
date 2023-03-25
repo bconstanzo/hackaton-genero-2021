@@ -2,7 +2,7 @@ from fileinput import filename
 import os
 import mimetypes
 import datetime
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 from re import search
 from .models import Caso, Concurrencia, Domicilio, Victima, Incidencia, Documento, Contacto, Agresor
 from .forms import DomicilioForm, PerfilForm, ContactoForm, ConcurrenciaForm, AgresorForm, IncidenciaForm, DocumentoForm, AgresorCasoForm
