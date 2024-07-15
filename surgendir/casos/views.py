@@ -211,7 +211,7 @@ def descargar_pdf_concurrencias(request, id_caso):
 def operador_busqueda(request):
     if request.user.is_staff :
         if (request.method == 'POST'):
-            searched = request.POST['searched']
+            searched = request.POST['searched'].strip()
             nombre_buscado = ' '
             apellido_buscado = ' '
             if ' ' in searched :
