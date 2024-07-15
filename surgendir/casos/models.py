@@ -179,6 +179,8 @@ def get_history_user(instance, **kwargs):
 class Agresor(Persona):
     class Meta:
         verbose_name_plural = "Agresores"
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    domicilio = models.OneToOneField(Domicilio, on_delete=models.DO_NOTHING, blank=True, null=True) 
     changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
 

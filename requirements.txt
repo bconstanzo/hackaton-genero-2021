@@ -12,3 +12,5 @@ django-crispy-forms
 python-magic
 xhtml2pdf
 crispy-bootstrap5
+setuptools
+psycopg2-binary
