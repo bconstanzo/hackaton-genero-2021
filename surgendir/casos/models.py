@@ -189,7 +189,7 @@ class Contacto(models.Model):
     victima = models.ForeignKey(Victima, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
     telefono = models.CharField(max_length=24)
-    email = models.CharField(max_length=50, null=True)
+    email = models.CharField(max_length=50, null=True, blank=True)
     changed_by = models.ForeignKey('MyUser', on_delete=models.DO_NOTHING, blank=True, null= True, related_name='changed_by_user'), 
     history = HistoricalRecords()
     def __str__(self):
@@ -208,6 +208,8 @@ class Caso(models.Model):
         choices=Estados.choices,
         default=Estados.ABIERTO,
     )
+    #  ipp = models.CharField(max_length=20)
+    
     relacion = models.CharField(
         max_length=30,
         choices=Relaciones.choices,

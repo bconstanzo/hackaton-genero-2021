@@ -98,14 +98,15 @@ class ContactoForm(ModelForm):
 		}
 	def clean_email(self):
 		email = self.cleaned_data.get("email")
-		try:
-			validate_email(email)
-		except ValidationError as e:
-			valid = False
-		else:
-			valid = True
-		if not valid:
-			raise forms.ValidationError("Email invalido: ejemplo@mail.com")
+		if email:
+			try:
+				validate_email(email)
+			except ValidationError as e:
+				valid = False
+			else:
+				valid = True
+			if not valid:
+				raise forms.ValidationError("Email invalido: ejemplo@mail.com")
 		return email
 		
 	def clean_telefono(self):
