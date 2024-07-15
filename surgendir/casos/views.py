@@ -95,7 +95,7 @@ def documentos(request,id_caso, id_doc):
                     file_content = f.read()
                     f.close()
             else:
-                doc_actual = NULL,
+                doc_actual = '',
                 file_content = ''
 
             context = {
