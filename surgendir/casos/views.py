@@ -363,6 +363,7 @@ def operador_editar_agresor(request, id_caso, id_agresor):
             "form_agresor" : form_agresor,
             "form_agresor_caso" : form_agresor_caso,
             "form_domicilio" : form_domicilio,
+            "caso_id" : id_caso,
         }
         if form_agresor.is_valid() and form_domicilio.is_valid() and form_agresor_caso.is_valid():
             form_agresor.save()
