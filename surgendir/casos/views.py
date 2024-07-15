@@ -189,25 +189,21 @@ def descargar(request, id_doc):
 
 @login_required
 def descargar_pdf_concurrencias(request, id_caso):
-    if request.user.is_staff :
-        caso =  Caso.objects.get(id = id_caso)
-        concurrencias = Concurrencia.objects.filter(caso = caso)
-        template_path = 'casos/descargar_pdf_concurrencias.html'
-        template = get_template(template_path)
-        context = {
-            'concurrencias': concurrencias,
-            'caso' : caso
-        }
-        html = template.render(context)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename= "Concurrencias.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
-        pisa_status = pisa.CreatePDF(
-        html, dest=response)
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    else:
-         response = redirect('/')
-
+    caso =  Caso.objects.get(id = id_caso)
+    concurrencias = Concurrencia.objects.filter(caso = caso)
+    template_path = 'casos/descargar_pdf_concurrencias.html'
+    template = get_template(template_path)
+    context = {
+        'concurrencias': concurrencias,
+        'caso' : caso
+    }
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename= "Concurrencias.pdf"'  # si comento esta linea el pdf aparece en el navegador en vez de descargarse
+    pisa_status = pisa.CreatePDF(
+    html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
 
 
