@@ -77,35 +77,40 @@ def documentos(request,id_caso, id_doc):
         response = redirect('/')
         return response
     else:
-        caso = Caso.objects.get( id = id_caso)
-        caso_usuario = caso.victima.usuario
-        if caso_usuario != request.user :
-            response = redirect('/')
-            return response
-        else:
-            documentos = Documento.objects.filter(caso = caso) 
-            file_content = ''
-            if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
-                doc_actual =  Documento.objects.get(id = id_doc)
-                filename = doc_actual.archivo.name
-                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                filepath = BASE_DIR +"/" + filename
-                if doc_actual.mimetype ==  "text/plain":
-                    f = open(filepath, 'r')
-                    file_content = f.read()
-                    f.close()
+        try:
+            caso = Caso.objects.get( id = id_caso)
+            caso_usuario = caso.victima.usuario
+            if caso_usuario != request.user :
+                response = redirect('/')
+                return response
             else:
-                doc_actual = '',
+                documentos = Documento.objects.filter(caso = caso) 
                 file_content = ''
+                if(id_doc != '-1'): # Si tengo un doc seleccionado para visualizar
+                    doc_actual =  Documento.objects.get(id = id_doc)
+                    filename = doc_actual.archivo.name
+                    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                    filepath = BASE_DIR +"/" + filename
+                    if doc_actual.mimetype ==  "text/plain":
+                        f = open(filepath, 'r')
+                        file_content = f.read()
+                        f.close()
+                else:
+                    doc_actual = '',
+                    file_content = ''
 
-            context = {
-                "caso": caso, 
-                "documentos" : documentos,
-                "doc_actual" : doc_actual,
-                'file_content': file_content,
-                'id_doc' :id_doc,
-            }
-            return render(request, "casos/documentos.html", context=context)
+                context = {
+                    "caso": caso, 
+                    "documentos" : documentos,
+                    "doc_actual" : doc_actual,
+                    'file_content': file_content,
+                    'id_doc' :id_doc,
+                }
+                return render(request, "casos/documentos.html", context=context)
+        except:
+            response = redirect('/perfil/caso/documentos/'+ id_caso + '/-1')
+            return response
+
 
 def home(request): 
 
