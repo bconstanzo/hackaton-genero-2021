@@ -113,3 +113,8 @@
     flex-direction: row; 
     flex-wrap: wrap; 
   } 
+
+  .logout-link{
+      background: none;
+      border: none;
+  }

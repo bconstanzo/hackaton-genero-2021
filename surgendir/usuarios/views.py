@@ -8,6 +8,9 @@ from django.shortcuts import render, redirect
 def login(request):
     pass
 
+def logout(request):
+    pass
+
 
 @login_required
 def password_change(request):
