@@ -184,18 +184,22 @@
         </br>
         </br>
         <h4>Documentos</h4> 
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <div class="list-group">
                 {% for documento in documentos %}
                 <li class="list-group-item">
                     <div class='container-side-by-side'>
                         <div class="row">
-                            <div class="col-sm">{{documento}}</div>
+                            <div class="col-sm"><b>{{documento}}</b></div>
                             <div class="col-sm">
                                 <a href="{% url 'descargar' documento.id %}"> <button type="button" class="btn btn-secondary"><i class="fa fa-download"></i></button> </a>
                             </div>
                         </div>
                     </div>
+                </br>
+                <div class="row">
+                    <div class="col-sm">{{documento.descripcion}}</div>
+                </div>
                 </li>
                 {% endfor %}    
             </div>
