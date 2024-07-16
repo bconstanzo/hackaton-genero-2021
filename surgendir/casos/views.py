@@ -108,11 +108,16 @@ def documentos(request,id_caso, id_doc):
             return render(request, "casos/documentos.html", context=context)
 
 def home(request): 
-    if request.user.is_authenticated and (not request.user.is_staff): 
-        response = redirect('/perfil')
+
+    if not request.user.is_authenticated:
+        response = redirect('/login')
         return response
-    else: 
-        return render(request, "casos/home.html")
+    else:
+        if not request.user.is_staff: 
+            response = redirect('/perfil')
+            return response
+        else: 
+            return render(request, "casos/home.html")
 
 def about(request):
     return render(request, "casos/about.html")
