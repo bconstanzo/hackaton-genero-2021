@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-gc4m9da(1(bn*8+cs2=^d*4dx*@#^#lj4a2nq3d3kn7j9%ot7n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 #ALLOWED_HOSTS = ['your_server_domain_or_IP', 'second_domain_or_IP', . . ., 'localhost']
 
 # Application definition
@@ -99,12 +99,14 @@ WSGI_APPLICATION = 'surgen.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'surgendb',
-        'USER': 'surgenuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'NAME': 'surgendb',
+        #'USER': 'surgenuser',
+        #'PASSWORD': 'password',
+        #'HOST': 'localhost',
+        #'PORT': '',
     }
 }
 
